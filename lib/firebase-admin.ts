@@ -20,11 +20,21 @@ function loadServiceAccount(): object | null {
       return null;
     }
   }
-  const json = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+  let json = process.env.FIREBASE_SERVICE_ACCOUNT_KEY?.trim();
   if (!json) return null;
+  // Some .env loaders leave outer quotes and escape inner ones as \"
+  if (json.length >= 2 && json.startsWith('"') && json.endsWith('"')) {
+    json = json.slice(1, -1).replace(/\\"/g, '"');
+  }
   try {
-    return JSON.parse(json) as object;
-  } catch {
+    const parsed = JSON.parse(json) as Record<string, unknown>;
+    // Env often stores private_key with literal \n (backslash-n) instead of newlines
+    if (parsed.private_key && typeof parsed.private_key === "string") {
+      parsed.private_key = parsed.private_key.replace(/\\n/g, "\n");
+    }
+    return parsed as object;
+  } catch (e) {
+    console.error("Firebase Admin: failed to parse FIREBASE_SERVICE_ACCOUNT_KEY:", e);
     return null;
   }
 }
@@ -37,9 +47,15 @@ function getAdminApp(): App | null {
   if (!serviceAccount) {
     return null;
   }
+  const databaseURL = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL;
+  if (!databaseURL) {
+    console.error(
+      "Firebase Admin: NEXT_PUBLIC_FIREBASE_DATABASE_URL is not set. Add it in Vercel Environment Variables."
+    );
+  }
   adminApp = initializeApp({
     credential: cert(serviceAccount),
-    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+    databaseURL: databaseURL || undefined,
   });
   return adminApp;
 }
