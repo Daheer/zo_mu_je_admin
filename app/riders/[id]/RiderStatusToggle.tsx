@@ -8,15 +8,33 @@ export function RiderStatusToggle({
   currentStatus,
 }: {
   riderId: string;
-  currentStatus: "active" | "inactive";
+  currentStatus: "pending" | "active" | "inactive";
 }) {
   const router = useRouter();
-  const isActive = currentStatus !== "inactive";
+  const isPending = currentStatus === "pending";
+  const isActive = currentStatus === "active";
+
+  async function handleActivate() {
+    await setRiderStatus(riderId, "active");
+    router.refresh();
+  }
 
   async function handleToggle() {
     const next = isActive ? "inactive" : "active";
     await setRiderStatus(riderId, next);
     router.refresh();
+  }
+
+  if (isPending) {
+    return (
+      <button
+        type="button"
+        onClick={handleActivate}
+        className="rounded-xl px-4 py-2 text-sm font-medium transition-colors bg-success/20 text-success hover:bg-success/30"
+      >
+        Activate rider
+      </button>
+    );
   }
 
   return (

@@ -12,6 +12,9 @@ const statusStyles: Record<
   under_review: { bg: "bg-blue-100", text: "text-blue-800" },
   resolved: { bg: "bg-success/20", text: "text-success" },
   dismissed: { bg: "bg-gray-200", text: "text-gray-700" },
+  pending: { bg: "bg-amber-100", text: "text-amber-800" },
+  active: { bg: "bg-success/20", text: "text-success" },
+  inactive: { bg: "bg-gray-200", text: "text-gray-700" },
 };
 
 interface StatusBadgeProps {

@@ -25,7 +25,15 @@ export async function getRiders(): Promise<Rider[]> {
   const ref = db.ref("riders");
   const snapshot = await ref.get();
   const val = snapshot.val();
-  return snapshotToRecord<Rider>(val, "id");
+  if (!val || typeof val !== "object" || Array.isArray(val)) return [];
+  // Only include entries whose value is an object (real rider nodes). Skip any
+  // stray root-level keys under "riders" (e.g. earnings/ratings stored at root).
+  return (Object.entries(val) as [string, unknown][])
+    .filter(
+      ([, v]) =>
+        v != null && typeof v === "object" && !Array.isArray(v)
+    )
+    .map(([id, value]) => ({ ...(value as object), id })) as Rider[];
 }
 
 export async function getRiderById(id: string): Promise<Rider | null> {
@@ -40,7 +48,7 @@ export async function getRiderById(id: string): Promise<Rider | null> {
 
 export async function updateRiderStatus(
   riderId: string,
-  status: "active" | "inactive"
+  status: "pending" | "active" | "inactive"
 ): Promise<void> {
   if (!hasFirebaseEnv()) throw new Error("Firebase not configured");
   const db = getAdminDb();

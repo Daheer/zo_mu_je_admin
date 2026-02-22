@@ -16,6 +16,9 @@ export interface User {
   createdAt?: number;
 }
 
+/** Rider account status: pending = awaiting admin activation; active = can go online; inactive = deactivated. */
+export type RiderStatus = "pending" | "active" | "inactive";
+
 export interface Rider {
   id: string;
   name?: string;
@@ -23,7 +26,9 @@ export interface Rider {
   phone?: string;
   address?: string;
   token?: string;
-  status?: string;
+  status?: RiderStatus | string;
+  idPhotoUrl?: string;
+  idType?: string;
   vehicle_details?: VehicleDetails;
   ratings?: string;
   earnings?: string;

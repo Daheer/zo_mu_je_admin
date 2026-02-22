@@ -8,6 +8,17 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { RiderStatusToggle } from "./RiderStatusToggle";
 import { format } from "date-fns";
 
+const ID_TYPE_LABELS: Record<string, string> = {
+  nin: "NIN (National ID)",
+  drivers_licence: "Driver's Licence",
+  voter_card: "Voter's Card",
+  international_passport: "International Passport",
+};
+
+function formatIdType(idType: string): string {
+  return ID_TYPE_LABELS[idType] ?? idType;
+}
+
 export default async function RiderDetailPage({
   params,
 }: {
@@ -41,7 +52,9 @@ export default async function RiderDetailPage({
           </div>
           <RiderStatusToggle
             riderId={rider.id}
-            currentStatus={(rider.status as "active" | "inactive") ?? "active"}
+            currentStatus={
+              (rider.status as "pending" | "active" | "inactive") ?? "active"
+            }
           />
         </div>
 
@@ -83,13 +96,44 @@ export default async function RiderDetailPage({
           <div>
             <dt className="text-sm text-[#7F8C8D]">Total earnings</dt>
             <dd className="text-[#2C3E50] font-medium">
-              {rider.earnings != null
+              {rider.earnings != null && rider.earnings !== ""
                 ? `₦${parseFloat(rider.earnings).toLocaleString()}`
-                : "—"}
+                : "₦0"}
             </dd>
           </div>
         </dl>
       </div>
+
+      {rider.idPhotoUrl && (
+        <div className="rounded-2xl border border-border bg-background p-6 shadow-card">
+          <h2 className="text-lg font-semibold text-[#2C3E50] mb-4">
+            ID verification
+          </h2>
+          <div className="space-y-3">
+            {rider.idType && (
+              <p className="text-sm text-[#7F8C8D]">
+                ID type:{" "}
+                <span className="font-medium text-[#2C3E50]">
+                  {formatIdType(rider.idType)}
+                </span>
+              </p>
+            )}
+            <a
+              href={rider.idPhotoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={rider.idPhotoUrl}
+                alt="Rider ID"
+                className="max-w-sm rounded-lg border border-border object-contain max-h-64"
+              />
+            </a>
+          </div>
+        </div>
+      )}
 
       <div className="rounded-2xl border border-border bg-background p-6 shadow-card">
         <h2 className="text-lg font-semibold text-[#2C3E50] mb-4">
