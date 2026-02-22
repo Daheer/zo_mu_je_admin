@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { logoutAction } from "@/app/login/actions";
 
 const navItems = [
   { href: "/", label: "Dashboard" },
@@ -51,6 +52,16 @@ export function Sidebar() {
           })}
         </ul>
       </nav>
+      <div className="p-3 border-t border-[#E0E0E0]/20">
+        <form action={logoutAction}>
+          <button
+            type="submit"
+            className="w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            Log out
+          </button>
+        </form>
+      </div>
     </aside>
   );
 }

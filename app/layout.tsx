@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Mono } from "next/font/google";
-import { Sidebar } from "@/components/Sidebar";
+import { LayoutSwitcher } from "@/components/LayoutSwitcher";
 import "./globals.css";
 
 const dmMono = DM_Mono({
@@ -22,10 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={dmMono.variable}>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <div className="flex">
-          <Sidebar />
-          <main className="flex-1 min-h-screen p-8">{children}</main>
-        </div>
+        <LayoutSwitcher>{children}</LayoutSwitcher>
       </body>
     </html>
   );
