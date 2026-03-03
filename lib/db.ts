@@ -1,7 +1,7 @@
 import { getAdminDb } from "./firebase-admin";
 import type { User, Rider, RideRequest, Report } from "./types";
 
-function hasFirebaseEnv(): boolean {
+export function hasFirebaseEnv(): boolean {
   return (
     Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_KEY) ||
     Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH)
