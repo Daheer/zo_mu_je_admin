@@ -13,6 +13,10 @@ export interface User {
   address?: string;
   token?: string;
   status?: string;
+  referralCode?: string;
+  referredByUid?: string;
+  referredByRole?: string;
+  voucherBalance?: string;
   createdAt?: number;
 }
 
@@ -27,6 +31,11 @@ export interface Rider {
   address?: string;
   token?: string;
   status?: RiderStatus | string;
+  referralCode?: string;
+  referredByUid?: string;
+  referredByRole?: string;
+  voucherBalance?: string;
+  voucherEarnings?: string;
   idPhotoUrl?: string;
   idType?: string;
   vehicle_details?: VehicleDetails;
@@ -52,6 +61,9 @@ export interface RideRequest {
   token?: string;
   estimatedFare?: string;
   fareAmount?: string;
+  voucherAppliedAmount?: string;
+  cashAmountDue?: string;
+  paymentMethod?: string;
   status?: string;
   riderLocation?: { latitude: string; longitude: string; rotation?: string };
   rider_name?: string;

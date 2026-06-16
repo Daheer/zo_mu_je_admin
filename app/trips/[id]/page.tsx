@@ -75,6 +75,22 @@ export default async function TripDetailPage({
                 : "—"}
             </p>
           </div>
+          <div>
+            <span className="text-sm text-[#7F8C8D]">Voucher used</span>
+            <p className="text-[#2C3E50] font-medium">
+              {trip.voucherAppliedAmount
+                ? `₦${parseFloat(trip.voucherAppliedAmount).toLocaleString()}`
+                : "—"}
+            </p>
+          </div>
+          <div>
+            <span className="text-sm text-[#7F8C8D]">Cash due</span>
+            <p className="text-[#2C3E50] font-medium">
+              {trip.cashAmountDue
+                ? `₦${parseFloat(trip.cashAmountDue).toLocaleString()}`
+                : "—"}
+            </p>
+          </div>
         </div>
 
         <div className="mt-8">

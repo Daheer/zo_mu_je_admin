@@ -81,6 +81,8 @@ export default async function TripsPage({
                   <th className="pb-3 pt-4 px-4">Ride type</th>
                   <th className="pb-3 pt-4 px-4">Est. fare</th>
                   <th className="pb-3 pt-4 px-4">Final fare</th>
+                  <th className="pb-3 pt-4 px-4">Voucher</th>
+                  <th className="pb-3 pt-4 px-4">Cash due</th>
                   <th className="pb-3 pt-4 px-4">Status</th>
                   <th className="pb-3 pt-4 px-4">Action</th>
                 </tr>
@@ -116,6 +118,16 @@ export default async function TripsPage({
                     <td className="py-3 px-4 text-[#2C3E50]">
                       {t.fareAmount
                         ? `₦${parseFloat(t.fareAmount).toLocaleString()}`
+                        : "—"}
+                    </td>
+                    <td className="py-3 px-4 text-[#2C3E50]">
+                      {t.voucherAppliedAmount
+                        ? `₦${parseFloat(t.voucherAppliedAmount).toLocaleString()}`
+                        : "—"}
+                    </td>
+                    <td className="py-3 px-4 text-[#2C3E50]">
+                      {t.cashAmountDue
+                        ? `₦${parseFloat(t.cashAmountDue).toLocaleString()}`
                         : "—"}
                     </td>
                     <td className="py-3 px-4">
