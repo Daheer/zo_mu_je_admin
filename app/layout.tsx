@@ -3,6 +3,9 @@ import { DM_Mono } from "next/font/google";
 import { LayoutSwitcher } from "@/components/LayoutSwitcher";
 import "./globals.css";
 
+// Firebase Admin SDK reads must run on each request, never during static builds.
+export const dynamic = "force-dynamic";
+
 const dmMono = DM_Mono({
   weight: ["300", "400", "500"],
   subsets: ["latin"],

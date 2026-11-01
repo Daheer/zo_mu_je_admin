@@ -33,7 +33,8 @@ export async function getRiders(): Promise<Rider[]> {
       ([, v]) =>
         v != null && typeof v === "object" && !Array.isArray(v)
     )
-    .map(([id, value]) => ({ ...(value as object), id })) as Rider[];
+    .map(([id, value]) => ({ ...(value as Rider), id }))
+    .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
 }
 
 export async function getRiderById(id: string): Promise<Rider | null> {

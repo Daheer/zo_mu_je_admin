@@ -4,11 +4,13 @@ import { RidersTableWithSearch } from "./RidersTableWithSearch";
 export default async function RidersPage() {
   const isConfigured = hasFirebaseEnv();
   let riders: Awaited<ReturnType<typeof getRiders>> = [];
+  let loadFailed = false;
   if (isConfigured) {
     try {
       riders = await getRiders();
     } catch (e) {
       console.error(e);
+      loadFailed = true;
     }
   }
 
@@ -26,7 +28,14 @@ export default async function RidersPage() {
           </p>
         </div>
       )}
-      <RidersTableWithSearch riders={riders} />
+      {loadFailed ? (
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          Could not load riders from Firebase. Refresh to try again. If this
+          continues, check the server logs and Firebase configuration.
+        </p>
+      ) : isConfigured ? (
+        <RidersTableWithSearch riders={riders} />
+      ) : null}
     </div>
   );
 }

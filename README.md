@@ -21,3 +21,4 @@ Next.js 14 admin dashboard for Zo Mu Je ride-hailing (Lafia, Nasarawa State). Us
 - Reads: `users`, `riders`, `All Ride Requests`, `reports`.
 - Writes: `riders/{id}/status` (active/inactive), `reports/{id}` (status, adminNotes, resolvedAt).
 - The `reports` node is created by this admin; the Flutter apps can write to it when users/drivers submit reports.
+- Admin pages read Firebase on each request and refresh every 30 seconds while visible, plus when the tab regains focus. Updates are polled, not streamed in real time. Riders with a registration date appear newest first; older records without a date follow them.
