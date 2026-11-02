@@ -3,14 +3,15 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: light dark;
   --background: #ffffff;
   --foreground: #2C3E50;
-  --primary: #56A48C;
-  --primary-foreground: #ffffff;
+  --primary: 40 116 95;
+  --primary-foreground: 255 255 255;
   --secondary: #EFAE37;
-  --muted: #F5F5F5;
-  --muted-foreground: #7F8C8D;
-  --border: #E0E0E0;
+  --muted: 245 245 245;
+  --muted-foreground: 82 99 102;
+  --border: 224 224 224;
   --destructive: #E74C3C;
   --success: #27AE60;
   --warning: #E67E22;
@@ -24,14 +25,38 @@
   :root {
     --background: #000000;
     --foreground: #ededed;
-    --muted: #1A1A1A;
-    --muted-foreground: #7F8C8D;
+    --muted: 26 26 26;
+    --muted-foreground: 193 203 199;
+    --primary: 129 207 180;
+    --primary-foreground: 16 45 36;
+    --border: 71 86 79;
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--primary));
+  outline-offset: 3px;
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgb(var(--muted-foreground));
+  opacity: 1;
+}
+
+button, input:not([type="hidden"]), select {
+  min-height: 2.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+  }
 }
 
 @layer utilities {

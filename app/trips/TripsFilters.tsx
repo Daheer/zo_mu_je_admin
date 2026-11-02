@@ -30,11 +30,12 @@ export function TripsFilters({
   return (
     <div className="flex flex-wrap items-end gap-4 rounded-2xl border border-border bg-background p-4 shadow-card">
       <div>
-        <label className="block text-xs text-[#7F8C8D] mb-1">Status</label>
+        <label htmlFor="trip-filter-status" className="block text-xs text-muted-foreground mb-1">Status</label>
         <select
+          id="trip-filter-status"
           value={currentStatus}
           onChange={(e) => updateFilter("status", e.target.value)}
-          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-[#2C3E50]"
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
         >
           {statusOptions.map((s) => (
             <option key={s} value={s}>
@@ -44,11 +45,12 @@ export function TripsFilters({
         </select>
       </div>
       <div>
-        <label className="block text-xs text-[#7F8C8D] mb-1">Ride type</label>
+        <label htmlFor="trip-filter-type" className="block text-xs text-muted-foreground mb-1">Ride type</label>
         <select
+          id="trip-filter-type"
           value={currentRideType}
           onChange={(e) => updateFilter("rideType", e.target.value)}
-          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-[#2C3E50]"
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
         >
           {rideTypes.map((r) => (
             <option key={r} value={r}>
@@ -58,21 +60,23 @@ export function TripsFilters({
         </select>
       </div>
       <div>
-        <label className="block text-xs text-[#7F8C8D] mb-1">From date</label>
+        <label htmlFor="trip-filter-from" className="block text-xs text-muted-foreground mb-1">From date</label>
         <input
+          id="trip-filter-from"
           type="date"
           value={from ?? ""}
           onChange={(e) => updateFilter("from", e.target.value)}
-          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-[#2C3E50]"
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
         />
       </div>
       <div>
-        <label className="block text-xs text-[#7F8C8D] mb-1">To date</label>
+        <label htmlFor="trip-filter-to" className="block text-xs text-muted-foreground mb-1">To date</label>
         <input
+          id="trip-filter-to"
           type="date"
           value={to ?? ""}
           onChange={(e) => updateFilter("to", e.target.value)}
-          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-[#2C3E50]"
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
         />
       </div>
     </div>

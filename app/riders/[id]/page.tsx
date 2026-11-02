@@ -32,11 +32,11 @@ export default async function RiderDetailPage({
   const endedTrips = riderTrips.filter((t) => t.status === "ended");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 [overflow-wrap:anywhere]">
       <div className="flex items-center gap-4">
         <Link
           href="/riders"
-          className="text-[#7F8C8D] hover:text-primary text-sm"
+          className="text-muted-foreground hover:text-primary text-sm"
         >
           ← Riders
         </Link>
@@ -45,10 +45,10 @@ export default async function RiderDetailPage({
       <div className="rounded-2xl border border-border bg-background p-6 shadow-card">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#2C3E50]">
+            <h1 className="text-2xl font-bold text-foreground">
               {rider.name ?? "Unnamed rider"}
             </h1>
-            <p className="text-[#7F8C8D] mt-1">ID: {rider.id}</p>
+            <p className="text-muted-foreground mt-1">ID: {rider.id}</p>
           </div>
           <RiderStatusToggle
             riderId={rider.id}
@@ -60,42 +60,42 @@ export default async function RiderDetailPage({
 
         <dl className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Phone</dt>
-            <dd className="text-[#2C3E50] font-medium">{rider.phone ?? "—"}</dd>
+            <dt className="text-sm text-muted-foreground">Phone</dt>
+            <dd className="text-foreground font-medium">{rider.phone ?? "—"}</dd>
           </div>
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Email</dt>
-            <dd className="text-[#2C3E50] font-medium">{rider.email ?? "—"}</dd>
+            <dt className="text-sm text-muted-foreground">Email</dt>
+            <dd className="text-foreground font-medium">{rider.email ?? "—"}</dd>
           </div>
           <div className="sm:col-span-2">
-            <dt className="text-sm text-[#7F8C8D]">Address</dt>
-            <dd className="text-[#2C3E50]">{rider.address ?? "—"}</dd>
+            <dt className="text-sm text-muted-foreground">Address</dt>
+            <dd className="text-foreground">{rider.address ?? "—"}</dd>
           </div>
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Vehicle type</dt>
-            <dd className="text-[#2C3E50]">
+            <dt className="text-sm text-muted-foreground">Vehicle type</dt>
+            <dd className="text-foreground">
               {rider.vehicle_details?.vehicle_type ?? "—"}
             </dd>
           </div>
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Vehicle number</dt>
-            <dd className="text-[#2C3E50]">
+            <dt className="text-sm text-muted-foreground">Vehicle number</dt>
+            <dd className="text-foreground">
               {rider.vehicle_details?.vehicle_number ?? "—"}
             </dd>
           </div>
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Vehicle model</dt>
-            <dd className="text-[#2C3E50]">
+            <dt className="text-sm text-muted-foreground">Vehicle model</dt>
+            <dd className="text-foreground">
               {rider.vehicle_details?.vehicle_model ?? "—"}
             </dd>
           </div>
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Ratings</dt>
-            <dd className="text-[#2C3E50]">{rider.ratings ?? "—"}</dd>
+            <dt className="text-sm text-muted-foreground">Ratings</dt>
+            <dd className="text-foreground">{rider.ratings ?? "—"}</dd>
           </div>
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Total earnings</dt>
-            <dd className="text-[#2C3E50] font-medium">
+            <dt className="text-sm text-muted-foreground">Total earnings</dt>
+            <dd className="text-foreground font-medium">
               {rider.earnings != null && rider.earnings !== ""
                 ? `₦${parseFloat(rider.earnings).toLocaleString()}`
                 : "₦0"}
@@ -106,14 +106,14 @@ export default async function RiderDetailPage({
 
       {rider.idPhotoUrl && (
         <div className="rounded-2xl border border-border bg-background p-6 shadow-card">
-          <h2 className="text-lg font-semibold text-[#2C3E50] mb-4">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             ID verification
           </h2>
           <div className="space-y-3">
             {rider.idType && (
-              <p className="text-sm text-[#7F8C8D]">
+              <p className="text-sm text-muted-foreground">
                 ID type:{" "}
-                <span className="font-medium text-[#2C3E50]">
+                <span className="font-medium text-foreground">
                   {formatIdType(rider.idType)}
                 </span>
               </p>
@@ -128,7 +128,7 @@ export default async function RiderDetailPage({
               <img
                 src={rider.idPhotoUrl}
                 alt="Rider ID"
-                className="max-w-sm rounded-lg border border-border object-contain max-h-64"
+                className="w-full max-w-sm rounded-lg border border-border object-contain max-h-64"
               />
             </a>
           </div>
@@ -136,16 +136,16 @@ export default async function RiderDetailPage({
       )}
 
       <div className="rounded-2xl border border-border bg-background p-6 shadow-card">
-        <h2 className="text-lg font-semibold text-[#2C3E50] mb-4">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Trip history ({endedTrips.length} completed)
         </h2>
         {riderTrips.length === 0 ? (
-          <p className="text-[#7F8C8D]">No trips yet</p>
+          <p className="text-muted-foreground">No trips yet</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border text-left text-[#7F8C8D]">
+                <tr className="border-b border-border text-left text-muted-foreground">
                   <th className="pb-3 pr-4">Time</th>
                   <th className="pb-3 pr-4">Customer</th>
                   <th className="pb-3 pr-4">Route</th>
@@ -163,18 +163,18 @@ export default async function RiderDetailPage({
                   )
                   .map((t) => (
                     <tr key={t.id} className="border-b border-border/60">
-                      <td className="py-3 pr-4 text-[#2C3E50]">
+                      <td className="py-3 pr-4 text-foreground">
                         {t.time
                           ? format(new Date(t.time), "MMM d, yyyy HH:mm")
                           : "—"}
                       </td>
-                      <td className="py-3 pr-4 text-[#2C3E50]">
+                      <td className="py-3 pr-4 text-foreground">
                         {t.userName ?? "—"}
                       </td>
-                      <td className="py-3 pr-4 text-[#7F8C8D] max-w-[200px] truncate">
+                      <td className="py-3 pr-4 text-muted-foreground max-w-[200px] truncate">
                         {t.originAddress ?? "—"} → {t.destinationAddress ?? "—"}
                       </td>
-                      <td className="py-3 pr-4 text-[#2C3E50]">
+                      <td className="py-3 pr-4 text-foreground">
                         {t.fareAmount
                           ? `₦${parseFloat(t.fareAmount).toLocaleString()}`
                           : "—"}

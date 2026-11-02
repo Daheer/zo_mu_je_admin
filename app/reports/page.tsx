@@ -43,7 +43,7 @@ export default async function ReportsPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-[#2C3E50]">Reports</h1>
+      <h1 className="text-2xl font-bold text-foreground">Reports</h1>
 
       <Suspense fallback={<div className="h-16 rounded-2xl border border-border bg-muted/30 animate-pulse" />}>
         <ReportsFilters
@@ -57,7 +57,7 @@ export default async function ReportsPage({
 
       <div className="rounded-2xl border border-border bg-background shadow-card overflow-hidden">
         {filtered.length === 0 ? (
-          <p className="text-[#7F8C8D] p-8 text-center">
+          <p className="text-muted-foreground p-8 text-center">
             No reports yet. Reports are created when drivers or customers submit
             issues from the app.
           </p>
@@ -65,7 +65,7 @@ export default async function ReportsPage({
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-muted/50 text-left text-[#7F8C8D]">
+                <tr className="border-b border-border bg-muted/50 text-left text-muted-foreground">
                   <th className="pb-3 pt-4 px-4">Date</th>
                   <th className="pb-3 pt-4 px-4">Reporter</th>
                   <th className="pb-3 pt-4 px-4">Role</th>
@@ -81,7 +81,7 @@ export default async function ReportsPage({
                     key={r.id}
                     className="border-b border-border/60 hover:bg-muted/30"
                   >
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {r.createdAt
                         ? format(
                             new Date(r.createdAt as string),
@@ -89,13 +89,13 @@ export default async function ReportsPage({
                           )
                         : "—"}
                     </td>
-                    <td className="py-3 px-4 font-medium text-[#2C3E50]">
+                    <td className="py-3 px-4 font-medium text-foreground">
                       {r.reporterName ?? "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50] capitalize">
+                    <td className="py-3 px-4 text-foreground capitalize">
                       {r.reporterRole ?? "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {r.category ?? "—"}
                     </td>
                     <td className="py-3 px-4">
@@ -107,7 +107,7 @@ export default async function ReportsPage({
                           View trip
                         </Link>
                       ) : (
-                        <span className="text-[#7F8C8D]">—</span>
+                        <span className="text-muted-foreground">—</span>
                       )}
                     </td>
                     <td className="py-3 px-4">

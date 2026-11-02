@@ -53,7 +53,7 @@ export default async function TripsPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-[#2C3E50]">Trips</h1>
+      <h1 className="text-2xl font-bold text-foreground">Trips</h1>
 
       <Suspense fallback={<div className="h-16 rounded-2xl border border-border bg-muted/30 animate-pulse" />}>
         <TripsFilters
@@ -68,12 +68,12 @@ export default async function TripsPage({
 
       <div className="rounded-2xl border border-border bg-background shadow-card overflow-hidden">
         {filtered.length === 0 ? (
-          <p className="text-[#7F8C8D] p-8 text-center">No trips match the filters</p>
+          <p className="text-muted-foreground p-8 text-center">No trips match the filters</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-muted/50 text-left text-[#7F8C8D]">
+                <tr className="border-b border-border bg-muted/50 text-left text-muted-foreground">
                   <th className="pb-3 pt-4 px-4">Time</th>
                   <th className="pb-3 pt-4 px-4">Customer</th>
                   <th className="pb-3 pt-4 px-4">Rider</th>
@@ -93,39 +93,39 @@ export default async function TripsPage({
                     key={t.id}
                     className="border-b border-border/60 hover:bg-muted/30"
                   >
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {t.time
                         ? format(new Date(t.time), "MMM d, HH:mm")
                         : "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {t.userName ?? "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {t.rider_name ?? (t.riderId === "waiting" ? "—" : t.riderId)}
                     </td>
-                    <td className="py-3 px-4 text-[#7F8C8D] max-w-[180px] truncate">
+                    <td className="py-3 px-4 text-muted-foreground max-w-[180px] truncate">
                       {t.originAddress ?? "—"} → {t.destinationAddress ?? "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {t.rideType ?? "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {t.estimatedFare
                         ? `₦${parseFloat(t.estimatedFare).toLocaleString()}`
                         : "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {t.fareAmount
                         ? `₦${parseFloat(t.fareAmount).toLocaleString()}`
                         : "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {t.voucherAppliedAmount
                         ? `₦${parseFloat(t.voucherAppliedAmount).toLocaleString()}`
                         : "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {t.cashAmountDue
                         ? `₦${parseFloat(t.cashAmountDue).toLocaleString()}`
                         : "—"}

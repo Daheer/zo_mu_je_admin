@@ -1,9 +1,18 @@
 "use client";
 
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 
 type State = { error?: string } | null;
 type Action = (prev: State, formData: FormData) => Promise<State>;
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button type="submit" disabled={pending} className="w-full rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-wait">
+      {pending ? "Logging in…" : "Log in"}
+    </button>
+  );
+}
 
 export function LoginForm({ action }: { action: Action }) {
   const [state, formAction] = useFormState(action, null);
@@ -21,20 +30,15 @@ export function LoginForm({ action }: { action: Action }) {
           required
           autoComplete="current-password"
           placeholder="Password"
-          className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-[#2C3E50] placeholder:text-[#7F8C8D] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>
       {state?.error && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800" role="alert">
           {state.error}
         </p>
       )}
-      <button
-        type="submit"
-        className="w-full rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-      >
-        Log in
-      </button>
+      <SubmitButton />
     </form>
   );
 }

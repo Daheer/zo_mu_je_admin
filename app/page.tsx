@@ -77,7 +77,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold text-[#2C3E50]">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatsCard title="Total Trips" value={trips.length} />
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
           title="Total Revenue"
           value={`₦${totalRevenue.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`}
         />
-        <StatsCard title="Active Riders" value={riders.length} />
+        <StatsCard title="Active Riders" value={riders.filter(rider => rider.status === "active").length} />
         <StatsCard title="Registered Customers" value={users.length} />
         <StatsCard title="Open Reports" value={openReports} />
       </div>
@@ -93,16 +93,16 @@ export default async function DashboardPage() {
       <DashboardCharts pieData={pieData} earningsByDay={earningsByDay} />
 
       <div className="rounded-2xl border border-border bg-background p-5 shadow-card">
-        <h2 className="text-lg font-semibold text-[#2C3E50] mb-4">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Recent trips
         </h2>
         {recentTrips.length === 0 ? (
-          <p className="text-[#7F8C8D] py-6 text-center">No trips yet</p>
+          <p className="text-muted-foreground py-6 text-center">No trips yet</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border text-left text-[#7F8C8D]">
+                <tr className="border-b border-border text-left text-muted-foreground">
                   <th className="pb-3 pr-4">Time</th>
                   <th className="pb-3 pr-4">Customer</th>
                   <th className="pb-3 pr-4">Rider</th>
@@ -115,21 +115,21 @@ export default async function DashboardPage() {
               <tbody>
                 {recentTrips.map((t) => (
                   <tr key={t.id} className="border-b border-border/60">
-                    <td className="py-3 pr-4 text-[#2C3E50]">
+                    <td className="py-3 pr-4 text-foreground">
                       {t.time
                         ? format(new Date(t.time), "MMM d, HH:mm")
                         : "—"}
                     </td>
-                    <td className="py-3 pr-4 text-[#2C3E50]">
+                    <td className="py-3 pr-4 text-foreground">
                       {t.userName ?? "—"}
                     </td>
-                    <td className="py-3 pr-4 text-[#2C3E50]">
+                    <td className="py-3 pr-4 text-foreground">
                       {t.rider_name ?? (t.riderId === "waiting" ? "—" : t.riderId)}
                     </td>
-                    <td className="py-3 pr-4 text-[#7F8C8D] max-w-[200px] truncate">
+                    <td className="py-3 pr-4 text-muted-foreground max-w-[200px] truncate">
                       {t.originAddress ?? "—"} → {t.destinationAddress ?? "—"}
                     </td>
-                    <td className="py-3 pr-4 text-[#2C3E50]">
+                    <td className="py-3 pr-4 text-foreground">
                       {t.fareAmount
                         ? `₦${parseFloat(t.fareAmount).toLocaleString()}`
                         : t.estimatedFare

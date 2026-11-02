@@ -29,9 +29,12 @@ export function LayoutSwitcher({
 
   if (pathname === "/login") return <>{children}</>;
   return (
-    <div className="flex">
+    <div className="flex min-h-screen flex-col md:flex-row">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-background focus:px-4 focus:py-3 focus:text-foreground">
+        Skip to content
+      </a>
       <Sidebar />
-      <main className="flex-1 min-h-screen p-8">{children}</main>
+      <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
     </div>
   );
 }

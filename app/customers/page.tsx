@@ -29,7 +29,7 @@ export default async function CustomersPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-[#2C3E50]">Customers</h1>
+      <h1 className="text-2xl font-bold text-foreground">Customers</h1>
       <CustomersTableWithSearch customers={customers} />
     </div>
   );

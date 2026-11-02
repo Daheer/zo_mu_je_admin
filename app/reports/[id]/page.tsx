@@ -19,11 +19,11 @@ export default async function ReportDetailPage({
     : null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 [overflow-wrap:anywhere]">
       <div className="flex items-center gap-4">
         <Link
           href="/reports"
-          className="text-[#7F8C8D] hover:text-primary text-sm"
+          className="text-muted-foreground hover:text-primary text-sm"
         >
           ← Reports
         </Link>
@@ -31,7 +31,7 @@ export default async function ReportDetailPage({
 
       <div className="rounded-2xl border border-border bg-background p-6 shadow-card">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <h1 className="text-2xl font-bold text-[#2C3E50]">
+          <h1 className="text-2xl font-bold text-foreground">
             Report #{id.slice(0, 8)}
           </h1>
           <StatusBadge status={report.status ?? "open"} />
@@ -39,24 +39,24 @@ export default async function ReportDetailPage({
 
         <dl className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Reporter</dt>
-            <dd className="text-[#2C3E50] font-medium">
+            <dt className="text-sm text-muted-foreground">Reporter</dt>
+            <dd className="text-foreground font-medium">
               {report.reporterName ?? "—"}
             </dd>
           </div>
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Role</dt>
-            <dd className="text-[#2C3E50] capitalize">
+            <dt className="text-sm text-muted-foreground">Role</dt>
+            <dd className="text-foreground capitalize">
               {report.reporterRole ?? "—"}
             </dd>
           </div>
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Category</dt>
-            <dd className="text-[#2C3E50]">{report.category ?? "—"}</dd>
+            <dt className="text-sm text-muted-foreground">Category</dt>
+            <dd className="text-foreground">{report.category ?? "—"}</dd>
           </div>
           <div>
-            <dt className="text-sm text-[#7F8C8D]">Created</dt>
-            <dd className="text-[#2C3E50]">
+            <dt className="text-sm text-muted-foreground">Created</dt>
+            <dd className="text-foreground">
               {report.createdAt
                 ? format(new Date(report.createdAt as string), "MMM d, yyyy HH:mm")
                 : "—"}
@@ -65,22 +65,22 @@ export default async function ReportDetailPage({
         </dl>
 
         <div className="mt-6">
-          <dt className="text-sm text-[#7F8C8D]">Description</dt>
-          <dd className="mt-1 text-[#2C3E50] whitespace-pre-wrap">
+          <dt className="text-sm text-muted-foreground">Description</dt>
+          <dd className="mt-1 text-foreground whitespace-pre-wrap">
             {report.description ?? "—"}
           </dd>
         </div>
 
         {linkedTrip && (
           <div className="mt-6 rounded-xl border border-border p-4 bg-muted/30">
-            <h3 className="text-sm font-medium text-[#7F8C8D] mb-2">
+            <h3 className="text-sm font-medium text-muted-foreground mb-2">
               Linked trip
             </h3>
-            <p className="text-[#2C3E50] text-sm">
+            <p className="text-foreground text-sm">
               {linkedTrip.originAddress ?? "—"} →{" "}
               {linkedTrip.destinationAddress ?? "—"}
             </p>
-            <p className="text-[#7F8C8D] text-xs mt-1">
+            <p className="text-muted-foreground text-xs mt-1">
               {linkedTrip.time
                 ? format(new Date(linkedTrip.time), "MMM d, yyyy HH:mm")
                 : ""}{" "}
@@ -97,8 +97,8 @@ export default async function ReportDetailPage({
 
         {report.adminNotes && (
           <div className="mt-6">
-            <dt className="text-sm text-[#7F8C8D]">Admin notes</dt>
-            <dd className="mt-1 text-[#2C3E50] whitespace-pre-wrap">
+            <dt className="text-sm text-muted-foreground">Admin notes</dt>
+            <dd className="mt-1 text-foreground whitespace-pre-wrap">
               {report.adminNotes}
             </dd>
           </div>

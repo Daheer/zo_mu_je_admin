@@ -7,7 +7,7 @@ import type { User } from "@/lib/types";
 function SearchIcon() {
   return (
     <svg
-      className="h-4 w-4 text-[#7F8C8D]"
+      className="h-4 w-4 text-muted-foreground"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -48,18 +48,20 @@ export function CustomersTableWithSearch({
         <span className="absolute left-3 top-1/2 -translate-y-1/2">
           <SearchIcon />
         </span>
+        <label htmlFor="search-customers" className="sr-only">Search customers by ID, name, or email</label>
         <input
+          id="search-customers"
           type="search"
           placeholder="Search by ID, name, or email..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full rounded-xl border border-border bg-background py-2.5 pl-10 pr-4 text-sm text-[#2C3E50] placeholder:text-[#7F8C8D] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          className="w-full rounded-xl border border-border bg-background py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>
 
       <div className="rounded-2xl border border-border bg-background shadow-card overflow-hidden">
         {filtered.length === 0 ? (
-          <p className="text-[#7F8C8D] p-8 text-center">
+          <p className="text-muted-foreground p-8 text-center">
             {customers.length === 0
               ? "No customers yet"
               : "No customers match your search"}
@@ -68,7 +70,7 @@ export function CustomersTableWithSearch({
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-muted/50 text-left text-[#7F8C8D]">
+                <tr className="border-b border-border bg-muted/50 text-left text-muted-foreground">
                   <th className="pb-3 pt-4 px-4">Name</th>
                   <th className="pb-3 pt-4 px-4">Phone</th>
                   <th className="pb-3 pt-4 px-4">Email</th>
@@ -82,16 +84,16 @@ export function CustomersTableWithSearch({
                     key={u.id}
                     className="border-b border-border/60 hover:bg-muted/30"
                   >
-                    <td className="py-3 px-4 font-medium text-[#2C3E50]">
+                    <td className="py-3 px-4 font-medium text-foreground">
                       {u.name ?? "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {u.phone ?? "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">
+                    <td className="py-3 px-4 text-foreground">
                       {u.email ?? "—"}
                     </td>
-                    <td className="py-3 px-4 text-[#2C3E50]">{u.tripCount}</td>
+                    <td className="py-3 px-4 text-foreground">{u.tripCount}</td>
                     <td className="py-3 px-4">
                       <Link
                         href={`/customers/${encodeURIComponent(u.id)}`}

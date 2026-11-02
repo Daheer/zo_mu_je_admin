@@ -28,11 +28,12 @@ export function ReportsFilters({
   return (
     <div className="flex flex-wrap items-end gap-4 rounded-2xl border border-border bg-background p-4 shadow-card">
       <div>
-        <label className="block text-xs text-[#7F8C8D] mb-1">Status</label>
+        <label htmlFor="report-filter-status" className="block text-xs text-muted-foreground mb-1">Status</label>
         <select
+          id="report-filter-status"
           value={currentStatus}
           onChange={(e) => updateFilter("status", e.target.value)}
-          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-[#2C3E50]"
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
         >
           {statusOptions.map((s) => (
             <option key={s} value={s}>
@@ -42,11 +43,12 @@ export function ReportsFilters({
         </select>
       </div>
       <div>
-        <label className="block text-xs text-[#7F8C8D] mb-1">Reporter role</label>
+        <label htmlFor="report-filter-role" className="block text-xs text-muted-foreground mb-1">Reporter role</label>
         <select
+          id="report-filter-role"
           value={currentRole}
           onChange={(e) => updateFilter("role", e.target.value)}
-          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-[#2C3E50]"
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
         >
           {roleOptions.map((r) => (
             <option key={r} value={r}>
@@ -56,13 +58,14 @@ export function ReportsFilters({
         </select>
       </div>
       <div>
-        <label className="block text-xs text-[#7F8C8D] mb-1">Category</label>
+        <label htmlFor="report-filter-category" className="block text-xs text-muted-foreground mb-1">Category</label>
         <input
+          id="report-filter-category"
           type="text"
           placeholder="Filter by category"
           value={category}
           onChange={(e) => updateFilter("category", e.target.value)}
-          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-[#2C3E50]"
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
         />
       </div>
     </div>
