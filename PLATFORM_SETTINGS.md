@@ -1,5 +1,12 @@
 # Platform settings
 
+> **Security correction:** `config/database.rules.json` is an interim settings
+> isolation ruleset, not a complete production security fix. It still allows
+> anonymous reads/writes on the legacy application nodes. The earlier rollout
+> instruction to publish it must not be treated as resolving Firebase's insecure
+> rules warning. A coordinated ownership/role-based rules and backend migration
+> is required before relying on this database for protected production data.
+
 Implemented 2 November 2026. Source changes are local; no production settings,
 users, Auth claims or database rules were changed during implementation.
 
@@ -58,7 +65,9 @@ and new-request policy validation are installed.
    Earlier apps do not understand these settings. Once settings are published,
    database rules require policy snapshots on all new requests, so old apps must
    update to book. Existing requests can continue to update their status.
-3. Review and deploy `config/database.rules.json` to the same Realtime Database.
+3. Replace the interim `config/database.rules.json` with fully restricted rules
+   and test them against the app flows before production deployment. The interim
+   file is insufficient to resolve the insecure-data exposure.
    It removes root access and explicitly preserves the seven known legacy nodes
    (`users`, `riders`, `reports`, `All Ride Requests`, `referrals`, `referralCodes`,
    `activeRiders`), including the Geofire index. Unknown root paths become denied.
@@ -85,7 +94,7 @@ use a staff index if account volume makes that slow.
 
 ## Validation
 
-- `npm test`: 11 tests, including validation, signed session expiry, role checks,
+- `npm test`: 13 tests, including validation, signed session expiry, role checks,
   session revocation, stale/cold-cache saves, audit history and rules guards.
 - `npm run lint`; `npm run build`: passed.
 - `node scripts/check-settings-emulator.cjs`: local-only integration test. It
@@ -108,3 +117,23 @@ and test credential, and never loads production credentials. For browser testing
 start the production build with both emulator host variables,
 `FIREBASE_DATABASE_URL=http://127.0.0.1:19000?ns=demo-zo-settings-default-rtdb`
 and `GCLOUD_PROJECT=demo-zo-settings`.
+
+## Settings UI redesign
+
+The settings page now uses a dedicated category rail on desktop and a native
+section selector on smaller screens. One focused panel is visible at a time.
+The workspace inherits the app’s normal DM Mono font, with a consistent
+form-control scale, switch rows, contextual help and a sticky save area. Team management and
+history have their own categories. Drafts persist across categories; native
+validation reveals a hidden invalid field before focusing it.
+
+Redesign verification: 13 admin tests, lint and production build passed. The
+browser workflow verified edits across three categories in one save, history,
+stale-draft preservation, hidden-field validation, area editing, staff creation,
+login, permission visibility and immediate session revocation. All 64 category /
+theme / viewport checks passed at 1440, 1024, 390 and 320 px, with no horizontal
+overflow or unlabeled fields; minimum observed text contrast was 5.01:1.
+
+Local demo-data previews: [desktop](docs/settings-desktop.png),
+[pricing](docs/settings-pricing.png), [dark mobile](docs/settings-mobile-dark.png),
+[service areas on mobile](docs/settings-mobile-service.png).
