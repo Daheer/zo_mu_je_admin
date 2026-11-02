@@ -1,0 +1,56 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      ".read": true,
+      ".write": true
+    },
+    "riders": {
+      ".read": true,
+      ".write": true
+    },
+    "reports": {
+      ".read": true,
+      ".write": true
+    },
+    "All Ride Requests": {
+      ".read": true,
+      ".write": true,
+      "$ride": {
+        ".validate": "(data.exists() && newData.child('settingsRevision').val() === data.child('settingsRevision').val() && newData.child('searchTimeoutSeconds').val() === data.child('searchTimeoutSeconds').val() && newData.child('rideType').val() === data.child('rideType').val() && newData.child('pricingPolicy/perKm').val() === data.child('pricingPolicy/perKm').val() && newData.child('pricingPolicy/perMinute').val() === data.child('pricingPolicy/perMinute').val() && newData.child('pricingPolicy/minimumFare').val() === data.child('pricingPolicy/minimumFare').val() && newData.child('voucherPolicy/maxVoucherPercent').val() === data.child('voucherPolicy/maxVoucherPercent').val() && newData.child('voucherPolicy/maxVoucherAmount').val() === data.child('voucherPolicy/maxVoucherAmount').val()) || (!data.exists() && (!root.child('platformControl/current').exists() || (auth != null && newData.child('userId').val() === auth.uid && newData.child('status').val() === 'waiting' && newData.child('riderId').val() === 'waiting' && root.child('platformControl/current').child('values').child('operations/bookingsEnabled').val() === true && root.child('platformControl/current').child('values').child('operations/maintenanceMode').val() === false && newData.child('settingsRevision').val() === root.child('platformControl/current').child('revision').val() && newData.child('searchTimeoutSeconds').val() === root.child('platformControl/current').child('values').child('matching/requestTimeoutSeconds').val() && (root.child('platformControl/current').child('values').child('verification/allowedVehicleTypes/0').val() === newData.child('rideType').val() || root.child('platformControl/current').child('values').child('verification/allowedVehicleTypes/1').val() === newData.child('rideType').val()) && newData.child('pricingPolicy/perKm').val() === root.child('platformControl/current').child('values').child('pricing').child(newData.child('rideType').val()).child('perKm').val() && newData.child('pricingPolicy/perMinute').val() === root.child('platformControl/current').child('values').child('pricing').child(newData.child('rideType').val()).child('perMinute').val() && newData.child('pricingPolicy/minimumFare').val() === root.child('platformControl/current').child('values').child('pricing').child(newData.child('rideType').val()).child('minimumFare').val() && newData.child('voucherPolicy/maxVoucherPercent').val() === root.child('platformControl/current').child('values').child('rewards/maxVoucherPercent').val() && newData.child('voucherPolicy/maxVoucherAmount').val() === root.child('platformControl/current').child('values').child('rewards/maxVoucherAmount').val())))"
+      }
+    },
+    "referrals": {
+      ".read": true,
+      ".write": true
+    },
+    "referralCodes": {
+      ".read": true,
+      ".write": true
+    },
+    "activeRiders": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": [
+        "g"
+      ]
+    },
+    "platformControl": {
+      ".read": false,
+      ".write": false,
+      "current": {
+        ".read": true,
+        ".write": false
+      },
+      "history": {
+        ".read": false,
+        ".write": false
+      }
+    },
+    "adminAccessHistory": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

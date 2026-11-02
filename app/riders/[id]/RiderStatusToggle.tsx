@@ -22,7 +22,8 @@ export function RiderStatusToggle({
     setSaving(true);
     setError(null);
     try {
-      await setRiderStatus(riderId, isActive ? "inactive" : "active");
+      const result = await setRiderStatus(riderId, isActive ? "inactive" : "active");
+      if (result?.error) { setError(result.error); return; }
       router.refresh();
     } catch {
       setError("Could not update this rider. Please try again.");

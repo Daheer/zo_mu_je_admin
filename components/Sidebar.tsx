@@ -11,6 +11,7 @@ const navItems = [
   { href: "/customers", label: "Customers" },
   { href: "/trips", label: "Trips" },
   { href: "/reports", label: "Reports" },
+  { href: "/settings", label: "Settings" },
 ];
 
 export function Sidebar() {

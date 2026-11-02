@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/admin-auth";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getReportById, getRideRequestById } from "@/lib/db";
@@ -10,6 +11,7 @@ export default async function ReportDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const actor = await requireAdmin();
   const { id } = await params;
   const report = await getReportById(id).catch(() => null);
   if (!report) notFound();
@@ -105,11 +107,11 @@ export default async function ReportDetailPage({
         )}
 
         <div className="mt-8 pt-6 border-t border-border">
-          <ReportUpdateForm
+          {actor.role !== "viewer" ? <ReportUpdateForm
             reportId={report.id}
             currentStatus={report.status ?? "open"}
             currentAdminNotes={report.adminNotes ?? ""}
-          />
+          /> : <p className="text-sm text-muted-foreground">Your account has read-only access.</p>}
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/admin-auth";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -24,6 +25,7 @@ export default async function RiderDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const actor = await requireAdmin();
   const { id } = await params;
   const rider = await getRiderById(id).catch(() => null);
   if (!rider) notFound();
@@ -50,12 +52,12 @@ export default async function RiderDetailPage({
             </h1>
             <p className="text-muted-foreground mt-1">ID: {rider.id}</p>
           </div>
-          <RiderStatusToggle
+          {actor.role !== "viewer" ? <RiderStatusToggle
             riderId={rider.id}
             currentStatus={
               (rider.status as "pending" | "active" | "inactive") ?? "active"
             }
-          />
+          /> : <p className="text-sm text-muted-foreground">Your account has read-only access.</p>}
         </div>
 
         <dl className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">

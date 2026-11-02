@@ -14,6 +14,7 @@ Next.js 14 admin dashboard for Zo Mu Je ride-hailing (Lafia, Nasarawa State). Us
 - **Riders** — List with vehicle type, ratings, earnings, status; detail page with trip history and Deactivate/Reactivate.
 - **Customers** — List with trip count; detail page with trip history.
 - **Trips** — Filterable list (status, ride type, date range); detail page with status timeline and rider/customer cards.
+- **Platform settings** — Pricing, matching, service areas/hours, rider requirements, rewards, operations, support contacts, staff permissions and revision history. See [PLATFORM_SETTINGS.md](PLATFORM_SETTINGS.md) for rollout and validation.
 - **Reports** — List with filters (status, reporter role, category); detail page with admin notes and status update (open → under_review → resolved/dismissed).
 
 ## Firebase

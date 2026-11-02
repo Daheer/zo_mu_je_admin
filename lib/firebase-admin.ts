@@ -47,13 +47,14 @@ function getAdminApp(): App | null {
   if (!serviceAccount) {
     return null;
   }
-  const databaseURL = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL;
+  const databaseURL = process.env.FIREBASE_DATABASE_URL || process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL;
   if (!databaseURL) {
     console.error(
       "Firebase Admin: NEXT_PUBLIC_FIREBASE_DATABASE_URL is not set. Add it in Vercel Environment Variables."
     );
   }
   adminApp = initializeApp({
+    projectId: process.env.GCLOUD_PROJECT || undefined,
     credential: cert(serviceAccount),
     databaseURL: databaseURL || undefined,
   });

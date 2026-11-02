@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "values": {
+    "pricing": {
+      "Tricycle": {
+        "perKm": 145,
+        "perMinute": 145,
+        "minimumFare": 500
+      },
+      "Motorcycle": {
+        "perKm": 116,
+        "perMinute": 116,
+        "minimumFare": 400
+      }
+    },
+    "matching": {
+      "requestTimeoutSeconds": 45,
+      "searchRadiusKm": 5,
+      "maxRetries": 0,
+      "retryIntervalSeconds": 10
+    },
+    "service": {
+      "maxTripDistanceKm": 30,
+      "hoursEnabled": false,
+      "opensAt": "00:00",
+      "closesAt": "23:59",
+      "daysOfWeek": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "zones": []
+    },
+    "verification": {
+      "requireVehicleDetails": false,
+      "requireIdPhoto": false,
+      "allowedVehicleTypes": [
+        "Tricycle",
+        "Motorcycle"
+      ]
+    },
+    "rewards": {
+      "enabled": true,
+      "inviterAmount": 500,
+      "welcomeAmount": 500,
+      "maxVoucherPercent": 100,
+      "maxVoucherAmount": 0
+    },
+    "operations": {
+      "bookingsEnabled": true,
+      "maintenanceMode": false,
+      "maintenanceMessage": "Bookings are temporarily unavailable. Please try again later.",
+      "supportPhone": "",
+      "supportEmail": ""
+    }
+  }
+}
