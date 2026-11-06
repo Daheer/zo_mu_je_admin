@@ -6,6 +6,9 @@ import { getAdminDb } from "./firebase-admin";
 import { verifySession } from "./admin-session";
 
 export type AdminRole = "owner" | "operator" | "viewer";
+export function isAdminRole(role: unknown): role is AdminRole {
+  return role === "owner" || role === "operator" || role === "viewer";
+}
 export interface AdminIdentity { uid: string; label: string; role: AdminRole }
 export function adminAuth() { getAdminDb(); return getAuth(); }
 export const requireAdmin = cache(async (): Promise<AdminIdentity> => {
@@ -16,7 +19,7 @@ export const requireAdmin = cache(async (): Promise<AdminIdentity> => {
   try {
     const user = await adminAuth().getUser(session.uid);
     const role = user.customClaims?.adminRole;
-    if (session.version === (user.customClaims?.adminSessionVersion || "") && !user.disabled && (role === "operator" || role === "viewer") && (!user.tokensValidAfterTime || session.issuedAt >= Date.parse(user.tokensValidAfterTime))) return { uid: user.uid, label: user.email || session.label, role };
+    if (session.version === (user.customClaims?.adminSessionVersion || "") && !user.disabled && isAdminRole(role) && (!user.tokensValidAfterTime || session.issuedAt >= Date.parse(user.tokensValidAfterTime))) return { uid: user.uid, label: user.email || session.label, role };
   } catch { /* Expired, disabled or revoked staff access. */ }
   redirect("/login");
 });

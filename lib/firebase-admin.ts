@@ -43,6 +43,11 @@ function getAdminApp(): App | null {
   if (getApps().length > 0) {
     return getApps()[0] as App;
   }
+  if (process.env.FIREBASE_AUTH_EMULATOR_HOST || process.env.FIREBASE_DATABASE_EMULATOR_HOST) {
+    const local = /^(127\.0\.0\.1|localhost):\d+$/;
+    if (process.env.GCLOUD_PROJECT !== "demo-zo-rides" || !local.test(process.env.FIREBASE_AUTH_EMULATOR_HOST || "") || !local.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST || "")) throw new Error("Use the isolated demo project and local Firebase emulators together.");
+    return initializeApp({ projectId: "demo-zo-rides", databaseURL: `http://${process.env.FIREBASE_DATABASE_EMULATOR_HOST}?ns=demo-zo-rides-default-rtdb`, credential: { getAccessToken: async () => ({ access_token: "owner", expires_in: 3600 }) } });
+  }
   const serviceAccount = loadServiceAccount();
   if (!serviceAccount) {
     return null;

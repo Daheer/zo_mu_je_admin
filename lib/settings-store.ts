@@ -1,3 +1,4 @@
+import { backendEnabled, backendRequest } from "./ride-backend";
 import { getAdminDb } from "./firebase-admin";
 import { DEFAULT_SETTINGS, validateSettings, changedSettings, type SettingsVersion, type SettingsChange, type PlatformSettings } from "./platform-settings";
 export function readVersion(raw: unknown): SettingsVersion {
@@ -8,14 +9,17 @@ export function readVersion(raw: unknown): SettingsVersion {
   return { ...v, values: validateSettings({ ...v.values, service: { ...v.values.service, zones: v.values.service.zones ?? [] } }) };
 }
 export async function getSettings() {
+  if (backendEnabled()) { const version = await backendRequest<SettingsVersion>("/v1/settings"); return version.revision === 0 ? { ...version, updatedAt: 0, updatedBy: "Default configuration" } : readVersion(version); }
   return readVersion((await getAdminDb().ref("platformControl/current").get()).val());
 }
 export async function getSettingsHistory(): Promise<SettingsChange[]> {
+  if (backendEnabled()) return backendRequest<SettingsChange[]>("/v1/admin/settings/history");
   const snapshot = await getAdminDb().ref("platformControl/history").orderByKey().limitToLast(30).get();
   return Object.values(snapshot.val() || {}).sort((a, b) => (b as SettingsChange).at - (a as SettingsChange).at) as SettingsChange[];
 }
 export async function saveSettings(values: PlatformSettings, revision: number, actor: string, reason: string) {
   const validated = validateSettings(values);
+  if (backendEnabled()) return backendRequest<SettingsVersion>("/v1/admin/settings", "POST", { values: validated, revision, reason });
   if (!Number.isInteger(revision) || revision < 0) throw new Error("Reload settings before saving.");
   if (typeof reason !== "string" || reason.trim().length < 5 || reason.length > 300) throw new Error("Explain this change in 5–300 characters.");
   let failure = "Settings were changed by another admin. Reload the page, review the latest values and try again.";

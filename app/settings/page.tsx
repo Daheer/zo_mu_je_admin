@@ -1,3 +1,4 @@
+import { backendEnabled, backendRequest } from "@/lib/ride-backend";
 import { requireAdmin, adminAuth } from "@/lib/admin-auth";
 import { getSettings, getSettingsHistory } from "@/lib/settings-store";
 import { requireProtectedSettingsRules } from "@/lib/settings-rules";
@@ -9,7 +10,9 @@ export default async function SettingsPage() {
   let setupError = "";
   try { await requireProtectedSettingsRules(); } catch (error) { setupError = error instanceof Error ? error.message : "Could not verify database protection. Saves are locked."; }
   const staff = [];
-  if (actor.role === "owner") {
+  if (actor.role === "owner" && backendEnabled()) {
+    staff.push(...await backendRequest<{uid:string;email:string;role:"operator"|"viewer";disabled:boolean}[]>("/v1/admin/staff"));
+  } else if (actor.role === "owner") {
     let pageToken: string | undefined;
     do {
       const page = await adminAuth().listUsers(1000, pageToken);
@@ -17,7 +20,7 @@ export default async function SettingsPage() {
       pageToken = page.pageToken;
     } while (pageToken);
   }
-  const accessHistory = actor.role === "owner" ? Object.values((await getAdminDb().ref("adminAccessHistory").orderByKey().limitToLast(20).get()).val() || {}) as { at: number; actor: string; target: string; role: string; action: string; disabled: boolean; outcome?: string }[] : [];
+  const accessHistory = actor.role === "owner" && backendEnabled() ? await backendRequest<{ at: number; actor: string; target: string; role: string; action: string; disabled: boolean; outcome?: string }[]>("/v1/admin/access-history") : actor.role === "owner" ? Object.values((await getAdminDb().ref("adminAccessHistory").orderByKey().limitToLast(20).get()).val() || {}) as { at: number; actor: string; target: string; role: string; action: string; disabled: boolean; outcome?: string }[] : [];
   const historyContent = <section aria-labelledby="history-title">
     <header className="settings-panel-heading"><h2 id="history-title">Change history</h2><p>See what changed, when, and who changed it. Showing the latest 30 revisions.</p></header>
     <div className="settings-panel-body">

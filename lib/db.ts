@@ -1,9 +1,10 @@
+import { backendEnabled, backendRequest, backendList } from "./ride-backend";
 import { getAdminDb } from "./firebase-admin";
 import type { User, Rider, RideRequest, Report } from "./types";
 
 export function hasFirebaseEnv(): boolean {
   return (
-    Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_KEY) ||
+    backendEnabled() || Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_KEY) ||
     Boolean(process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH)
   );
 }
@@ -20,6 +21,7 @@ function snapshotToRecord<T extends { id: string }>(
 }
 
 export async function getRiders(): Promise<Rider[]> {
+  if (backendEnabled()) return backendList<Rider>("/v1/admin/profiles?role=rider");
   if (!hasFirebaseEnv()) return [];
   const db = getAdminDb();
   const ref = db.ref("riders");
@@ -38,6 +40,7 @@ export async function getRiders(): Promise<Rider[]> {
 }
 
 export async function getRiderById(id: string): Promise<Rider | null> {
+  if (backendEnabled()) return backendRequest<Rider | null>(`/v1/admin/profiles/${encodeURIComponent(id)}`);
   if (!hasFirebaseEnv()) return null;
   const db = getAdminDb();
   const ref = db.ref(`riders/${id}`);
@@ -51,6 +54,7 @@ export async function updateRiderStatus(
   riderId: string,
   status: "pending" | "active" | "inactive"
 ): Promise<void> {
+  if (backendEnabled()) { await backendRequest(`/v1/admin/riders/${encodeURIComponent(riderId)}/status`, "POST", { status }); return; }
   if (!hasFirebaseEnv()) throw new Error("Firebase not configured");
   const db = getAdminDb();
   const ref = db.ref(`riders/${riderId}/status`);
@@ -58,6 +62,7 @@ export async function updateRiderStatus(
 }
 
 export async function getUsers(): Promise<User[]> {
+  if (backendEnabled()) return backendList<User>("/v1/admin/profiles?role=customer");
   if (!hasFirebaseEnv()) return [];
   const db = getAdminDb();
   const ref = db.ref("users");
@@ -67,6 +72,7 @@ export async function getUsers(): Promise<User[]> {
 }
 
 export async function getUserById(id: string): Promise<User | null> {
+  if (backendEnabled()) return backendRequest<User | null>(`/v1/admin/profiles/${encodeURIComponent(id)}`);
   if (!hasFirebaseEnv()) return null;
   const db = getAdminDb();
   const ref = db.ref(`users/${id}`);
@@ -77,6 +83,7 @@ export async function getUserById(id: string): Promise<User | null> {
 }
 
 export async function getRideRequests(): Promise<RideRequest[]> {
+  if (backendEnabled()) return (await backendList<BackendRide>("/v1/admin/rides")).map(mapRide);
   if (!hasFirebaseEnv()) return [];
   const db = getAdminDb();
   const ref = db.ref("All Ride Requests");
@@ -86,6 +93,7 @@ export async function getRideRequests(): Promise<RideRequest[]> {
 }
 
 export async function getRideRequestById(id: string): Promise<RideRequest | null> {
+  if (backendEnabled()) { const ride = await backendRequest<BackendRide | null>(`/v1/admin/rides/${encodeURIComponent(id)}`); return ride ? mapRide(ride) : null; }
   if (!hasFirebaseEnv()) return null;
   const db = getAdminDb();
   const ref = db.ref(`All Ride Requests/${id}`);
@@ -96,6 +104,7 @@ export async function getRideRequestById(id: string): Promise<RideRequest | null
 }
 
 export async function getReports(): Promise<Report[]> {
+  if (backendEnabled()) return backendList<Report>("/v1/admin/reports");
   if (!hasFirebaseEnv()) return [];
   const db = getAdminDb();
   const ref = db.ref("reports");
@@ -105,6 +114,7 @@ export async function getReports(): Promise<Report[]> {
 }
 
 export async function getReportById(id: string): Promise<Report | null> {
+  if (backendEnabled()) return backendRequest<Report | null>(`/v1/admin/reports/${encodeURIComponent(id)}`);
   if (!hasFirebaseEnv()) return null;
   const db = getAdminDb();
   const ref = db.ref(`reports/${id}`);
@@ -118,6 +128,7 @@ export async function updateReport(
   reportId: string,
   updates: Partial<Pick<Report, "status" | "adminNotes" | "resolvedAt">>
 ): Promise<void> {
+  if (backendEnabled()) { await backendRequest(`/v1/admin/reports/${encodeURIComponent(reportId)}`, "PATCH", { status: updates.status, adminNotes: updates.adminNotes || "" }); return; }
   if (!hasFirebaseEnv()) throw new Error("Firebase not configured");
   const db = getAdminDb();
   const ref = db.ref(`reports/${reportId}`);
@@ -153,4 +164,15 @@ export async function getRideRequestsByCustomer(
   return all.filter(
     (r) => r.userName === userName || r.userEmail === userEmail
   );
+}
+
+interface BackendRide {
+  id: string; customerId: string; riderId?: string; createdAt: number; status: string; vehicleType: string; fareMinor: number;
+  pickup: { latitude: number; longitude: number; address: string }; dropoff: { latitude: number; longitude: number; address: string };
+  customer?: { name?: string; email?: string; phone?: string }; rider?: { name?: string; phone?: string; vehicleModel?: string; vehicleNumber?: string; vehicleColor?: string };
+  receipt?: { fareMinor: number; voucherMinor: number; cashMinor: number };
+}
+function mapRide(r: BackendRide): RideRequest {
+  const point = (p: BackendRide["pickup"]) => ({ latitude: String(p.latitude), longitude: String(p.longitude) });
+  return { id: r.id, origin: point(r.pickup), destination: point(r.dropoff), originAddress: r.pickup.address, destinationAddress: r.dropoff.address, userName: r.customer?.name, userEmail: r.customer?.email, userPhone: r.customer?.phone, rideType: r.vehicleType, vehicle_type: r.vehicleType, riderId: r.riderId, time: new Date(r.createdAt).toISOString(), estimatedFare: String(r.fareMinor / 100), fareAmount: r.receipt ? String(r.receipt.fareMinor / 100) : undefined, voucherAppliedAmount: r.receipt ? String(r.receipt.voucherMinor / 100) : undefined, cashAmountDue: r.receipt ? String(r.receipt.cashMinor / 100) : undefined, paymentMethod: "cash", status: r.status, rider_name: r.rider?.name, rider_phone: r.rider?.phone, vehicle_details: r.rider ? [r.rider.vehicleModel, r.rider.vehicleNumber, r.rider.vehicleColor].filter(Boolean).join(" · ") : undefined };
 }

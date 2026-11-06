@@ -5,6 +5,7 @@ const vm = require("node:vm");
 const ts = require("typescript");
 
 function load(file, imports, globals = {}) {
+  imports = { "./ride-backend": { backendEnabled: () => false }, ...imports };
   const module = { exports: {} };
   const { outputText } = ts.transpileModule(readFileSync(file, "utf8"), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },

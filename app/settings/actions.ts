@@ -1,4 +1,5 @@
 "use server";
+import { backendEnabled, backendRequest } from "@/lib/ride-backend";
 import crypto from "node:crypto";
 import { requirePermission, adminAuth } from "@/lib/admin-auth";
 import { saveSettings } from "@/lib/settings-store";
@@ -16,6 +17,7 @@ async function manageStaffInternal(input: { action: "create" | "update"; uid?: s
   const actor = await requirePermission("settings");
   if (!input || !["create", "update"].includes(input.action) || !["operator", "viewer"].includes(input.role)) throw new Error("Invalid staff change.");
   await requireProtectedSettingsRules();
+  if (backendEnabled()) { await backendRequest("/v1/admin/staff", "POST", input); return; }
   const auth = adminAuth();
   let target: string;
   let uid: string | undefined;

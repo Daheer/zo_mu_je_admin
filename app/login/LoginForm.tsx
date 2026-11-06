@@ -20,7 +20,7 @@ export function LoginForm({ action }: { action: Action }) {
   return (
     <form action={formAction} className="space-y-4">
       <div>
-        <label htmlFor="email" className="block text-sm mb-1">Staff email (leave blank for owner)</label>
+        <label htmlFor="email" className="block text-sm mb-1">Email (leave blank for owner recovery)</label>
         <input id="email" name="email" type="email" autoComplete="username" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-foreground" />
       </div>
       <div>

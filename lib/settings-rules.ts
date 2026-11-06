@@ -1,6 +1,8 @@
+import { backendEnabled } from "./ride-backend";
 import { rules as expectedRules } from "../config/database.rules.json";
 import { getAdminDb } from "./firebase-admin";
 export async function requireProtectedSettingsRules() {
+  if (backendEnabled()) return;
   const { rules } = await getAdminDb().getRulesJSON() as { rules: Record<string, unknown> };
   const safe = (raw: unknown, privateRead = false): boolean => {
     if (!raw || typeof raw !== "object") return false;

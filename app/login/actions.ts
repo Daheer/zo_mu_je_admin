@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import crypto from "crypto";
-import { adminAuth } from "@/lib/admin-auth";
+import { adminAuth, isAdminRole } from "@/lib/admin-auth";
 
 const COOKIE_NAME = "admin_session";
 const MAX_AGE_SECONDS = 7 * 24 * 60 * 60; // 7 days
@@ -16,7 +16,7 @@ export async function loginAction(
   const expected = process.env.ADMIN_PASSWORD;
   const secret = process.env.ADMIN_COOKIE_SECRET;
 
-  if (!expected || !secret) {
+  if (!secret) {
     return { error: "Server configuration error." };
   }
 
@@ -34,10 +34,11 @@ export async function loginAction(
       if (!response.ok) return { error: "Invalid email or password." };
       const data = await response.json();
       const user = await adminAuth().getUser(data.localId);
-      if (user.disabled || !["operator", "viewer"].includes(user.customClaims?.adminRole)) return { error: "This account does not have admin access." };
+      if (user.disabled || !isAdminRole(user.customClaims?.adminRole)) return { error: "This account does not have admin access." };
       uid = user.uid; label = user.email || email; version = user.customClaims?.adminSessionVersion || "";
     } catch { return { error: "Could not log in. Please try again." }; }
   } else {
+    if (!expected) return { error: "Server configuration error." };
     const submittedHash = crypto.createHash("sha256").update(password, "utf8").digest();
     const expectedHash = crypto.createHash("sha256").update(expected, "utf8").digest();
     if (!crypto.timingSafeEqual(submittedHash, expectedHash)) return { error: "Invalid password." };

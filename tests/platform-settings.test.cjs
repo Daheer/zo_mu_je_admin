@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const fs = require('node:fs'), vm = require('node:vm'), ts = require('typescript'), crypto = require('node:crypto');
 function load(file, imports = {}, globals = {}) {
+ imports = { "./ride-backend": { backendEnabled: () => false }, ...imports };
  const module = {exports:{}};
  vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText, {module,exports:module.exports,require:n=>{assert.ok(n in imports,n);return imports[n]},structuredClone,...globals});
  return module.exports;
@@ -80,6 +81,9 @@ test('staff roles and version rotation are enforced on the server, including exi
  },{process:{env:{ADMIN_COOKIE_SECRET:'test'}}});
  assert.equal((await auth.requirePermission('settings')).role,'owner');
  session={uid:'staff',label:user.email,issuedAt:Date.now(),version:'v1'};
+ user.customClaims.adminRole='owner';
+ assert.equal((await auth.requirePermission('settings')).role,'owner');
+ user.customClaims.adminRole='viewer';
  assert.equal((await auth.requireAdmin()).role,'viewer');
  await assert.rejects(auth.requirePermission('operate'),/permission/);
  await assert.rejects(auth.requirePermission('settings'),/permission/);
