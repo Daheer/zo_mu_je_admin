@@ -4,9 +4,17 @@ import { getSettings, getSettingsHistory } from "@/lib/settings-store";
 import { requireProtectedSettingsRules } from "@/lib/settings-rules";
 import { getAdminDb } from "@/lib/firebase-admin";
 import { SettingsWorkspace } from "./SettingsWorkspace";
+import type { CourierSettings } from "@/lib/courier";
 export default async function SettingsPage() {
   const actor = await requireAdmin();
   const [version, history] = await Promise.all([getSettings(), getSettingsHistory()]);
+  // An older backend can still serve the existing ride settings during rollout.
+  let courier: CourierSettings | null = null;
+  let courierHistory: { revision: number; at: number; actor: string; reason: string; before: unknown; after: unknown }[] = [];
+  if (backendEnabled()) {
+    try { courier = await backendRequest<CourierSettings>("/v1/courier-settings"); } catch { /* The courier panel explains its unavailable state. */ }
+    try { courierHistory = await backendRequest<typeof courierHistory>("/v1/admin/courier-settings/history") ?? []; } catch { /* Older backends have no courier history. */ }
+  }
   let setupError = "";
   try { await requireProtectedSettingsRules(); } catch (error) { setupError = error instanceof Error ? error.message : "Could not verify database protection. Saves are locked."; }
   const staff = [];
@@ -30,7 +38,8 @@ export default async function SettingsPage() {
         <details><summary>View {h.changes.length} changed {h.changes.length === 1 ? "field" : "fields"}</summary><dl>{h.changes.map(c => <div key={c.path}><dt>{c.path.split(".").map(part => part.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, ch => ch.toUpperCase())).join(" / ")}</dt><dd>{c.before} → {c.after}</dd></div>)}</dl></details>
       </li>)}</ol>}
       {accessHistory.length > 0 && <div className="settings-subsection"><h3>Staff access</h3><ul>{accessHistory.reverse().map((h, i) => <li key={i} className="settings-history-entry"><div className="settings-history-meta"><span>{h.role} · {h.outcome || "applied"}</span><time>{new Date(h.at).toLocaleString("en-GB", { timeZone: "Africa/Lagos", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} WAT</time></div><h3>{h.target}</h3><p>{h.actor} · {h.action === "create" ? "Account created" : h.disabled ? "Access disabled" : "Access updated"}</p></li>)}</ul></div>}
+      {courierHistory.length > 0 && <div className="settings-subsection"><h3>Courier settings</h3><ol>{courierHistory.map(h => <li key={h.revision} className="settings-history-entry"><div className="settings-history-meta"><span>Courier revision {h.revision}</span><time>{new Date(h.at).toLocaleString('en-GB', { timeZone: 'Africa/Lagos' })} WAT</time></div><h3>{h.reason}</h3><p>Changed by {h.actor}</p><details><summary>View saved values</summary><dl><dt>Before</dt><dd>{JSON.stringify(h.before)}</dd><dt>After</dt><dd>{JSON.stringify(h.after)}</dd></dl></details></li>)}</ol></div>}
     </div>
   </section>;
-  return <SettingsWorkspace initial={version} role={actor.role} staff={staff} history={historyContent} setupError={actor.role === "owner" ? setupError : ""} />;
+  return <SettingsWorkspace initial={version} role={actor.role} staff={staff} history={historyContent} setupError={actor.role === "owner" ? setupError : ""} courier={courier} />;
 }

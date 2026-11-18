@@ -4,8 +4,10 @@ import { useState } from "react";
 import type { SettingsVersion } from "@/lib/platform-settings";
 import { SettingsForm } from "./SettingsForm";
 import { StaffPanel, type Staff } from "./StaffPanel";
+import { CourierForm } from "./CourierForm";
+import type { CourierSettings } from "@/lib/courier";
 
-export type SettingsSection = "general" | "pricing" | "matching" | "service" | "verification" | "rewards" | "team" | "history";
+export type SettingsSection = "general" | "pricing" | "matching" | "service" | "verification" | "rewards" | "courier" | "team" | "history";
 export const sections: { id: SettingsSection; label: string }[] = [
   { id: "general", label: "General" },
   { id: "pricing", label: "Pricing" },
@@ -13,16 +15,18 @@ export const sections: { id: SettingsSection; label: string }[] = [
   { id: "service", label: "Service" },
   { id: "verification", label: "Verification" },
   { id: "rewards", label: "Rewards" },
+  { id: "courier", label: "Courier" },
   { id: "team", label: "Team & access" },
   { id: "history", label: "History" },
 ];
 
-export function SettingsWorkspace({ initial, role, staff, history, setupError }: {
+export function SettingsWorkspace({ initial, role, staff, history, setupError, courier = null }: {
   initial: SettingsVersion;
   role: "owner" | "operator" | "viewer";
   staff: Staff[];
   history: React.ReactNode;
   setupError: string;
+  courier?: CourierSettings | null;
 }) {
   const [active, setActive] = useState<SettingsSection>("general");
   const available = sections.filter(s => s.id !== "team" || role === "owner");
@@ -33,7 +37,8 @@ export function SettingsWorkspace({ initial, role, staff, history, setupError }:
       {available.map(section => <button key={section.id} type="button" aria-current={active === section.id ? "page" : undefined} aria-controls="settings-panel" onClick={() => setActive(section.id)}>{section.label}</button>)}
     </nav>
     <div id="settings-panel" className="settings-panel">
-      <div hidden={active === "team" || active === "history"}><SettingsForm initial={initial} canEdit={role === "owner"} activeSection={active} onSectionChange={setActive} heading={available.find(s => s.id === active)!} /></div>
+      <div hidden={active === "team" || active === "history" || active === "courier"}><SettingsForm initial={initial} canEdit={role === "owner"} activeSection={active} onSectionChange={setActive} heading={available.find(s => s.id === active)!} /></div>
+      <div hidden={active !== "courier"}><CourierForm initial={courier} canEdit={role === "owner"}/></div>
       {role === "owner" && <div hidden={active !== "team"}><StaffPanel staff={staff}/></div>}
       <div hidden={active !== "history"}>{history}</div>
     </div>

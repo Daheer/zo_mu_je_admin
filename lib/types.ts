@@ -47,6 +47,8 @@ export interface Rider {
 }
 
 export interface RideRequest {
+  jobType?: string;
+  delivery?: import("./courier").CourierJob;
   id: string;
   origin?: { latitude: string; longitude: string };
   destination?: { latitude: string; longitude: string };
@@ -79,6 +81,15 @@ export type RideStatus =
   | "arrived"
   | "ontrip"
   | "ended"
+  | "picked_up"
+  | "arrived_at_dropoff"
+  | "delivered"
+  | "delivery_review"
+  | "support_required"
+  | "returning"
+  | "return_review"
+  | "returned"
+  | "no_rider_found"
   | "cancelled";
 
 export type ReportStatus = "open" | "under_review" | "resolved" | "dismissed";

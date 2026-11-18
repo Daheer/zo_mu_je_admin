@@ -40,3 +40,10 @@ The hosted admin must set `RIDE_BACKEND_URL=https://zo-mu-je.duckdns.org` in Ver
 Without `RIDE_BACKEND_URL`, the legacy adapter reads the old root `riders`/`users` collections. New app registrations live under `rideFoundation` and are listed through `/v1/admin/profiles?role=rider`; approving an old legacy record does not approve a new backend rider profile. Do not merge the two datasets or infer rider approval from a Google sign-in.
 
 The rider list offers All / Pending / Active / Inactive shortcuts with live counts, combined name/email/phone/ID search, and newest registrations first. Settings uses the shared admin theme, plain category navigation and existing form validation/save behavior.
+
+
+## Courier implementation branch — 18 November 2026
+
+The `courier-email` branch adds a plain Courier settings tab for editable motorcycle package prices, weights/dimensions, prohibited items and activation. Prices start from the backend’s configured motorcycle fare with ₦0/₦100/₦200 size surcharges; bookings start disabled and enabling requires Gmail SMTP configuration. Existing ride settings retain their schema and drafts. Courier revisions have a separate audit history.
+
+Trips filters now separate packages and rides. Package details show receiver contacts, cash confirmation, private pickup/delivery/return photo links and audited support outcomes. Operators can approve delivery photo fallback, arrange return to the original pickup, confirm handback/refund or revoke receiver tracking. The backend enforces permissions, custody and resolution idempotency. These controls require backend 0.5.0; older backends still serve existing ride pages and show the courier settings unavailable state. No hosted configuration was changed as part of this branch.

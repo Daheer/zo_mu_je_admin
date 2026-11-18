@@ -6,6 +6,13 @@ import { saveSettings } from "@/lib/settings-store";
 import { requireProtectedSettingsRules } from "@/lib/settings-rules";
 import { getAdminDb } from "@/lib/firebase-admin";
 import type { PlatformSettings } from "@/lib/platform-settings";
+import type { CourierSettings, CourierValues } from "@/lib/courier";
+export async function saveCourierSettingsAction(values: CourierValues, revision: number, reason: string) {
+  await requirePermission("settings");
+  try {
+    return { ok: true as const, version: await backendRequest<CourierSettings>("/v1/admin/courier-settings", "POST", { values, revision, reason }) };
+  } catch (error) { return { ok: false as const, error: actionError(error) }; }
+}
 export async function saveSettingsAction(values: PlatformSettings, revision: number, reason: string) {
   const actor = await requirePermission("settings");
   try {

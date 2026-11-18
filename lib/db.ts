@@ -167,6 +167,15 @@ export async function getRideRequestsByCustomer(
 }
 
 interface BackendRide {
+  type?: string;
+  package?: import("./courier").CourierJob["package"];
+  collection?: import("./courier").CourierJob["collection"];
+  pickupProof?: import("./courier").CourierJob["pickupProof"];
+  deliveryProof?: import("./courier").CourierJob["deliveryProof"];
+  receiverEmailStatus?: import("./courier").CourierJob["receiverEmailStatus"];
+  incident?: import("./courier").CourierJob["incident"];
+  events?: import("./courier").CourierJob["events"];
+  resolutions?: import("./courier").CourierJob["resolutions"];
   id: string; customerId: string; riderId?: string; createdAt: number; status: string; vehicleType: string; fareMinor: number;
   pickup: { latitude: number; longitude: number; address: string }; dropoff: { latitude: number; longitude: number; address: string };
   customer?: { name?: string; email?: string; phone?: string }; rider?: { name?: string; phone?: string; vehicleModel?: string; vehicleNumber?: string; vehicleColor?: string };
@@ -174,5 +183,5 @@ interface BackendRide {
 }
 function mapRide(r: BackendRide): RideRequest {
   const point = (p: BackendRide["pickup"]) => ({ latitude: String(p.latitude), longitude: String(p.longitude) });
-  return { id: r.id, origin: point(r.pickup), destination: point(r.dropoff), originAddress: r.pickup.address, destinationAddress: r.dropoff.address, userName: r.customer?.name, userEmail: r.customer?.email, userPhone: r.customer?.phone, rideType: r.vehicleType, vehicle_type: r.vehicleType, riderId: r.riderId, time: new Date(r.createdAt).toISOString(), estimatedFare: String(r.fareMinor / 100), fareAmount: r.receipt ? String(r.receipt.fareMinor / 100) : undefined, voucherAppliedAmount: r.receipt ? String(r.receipt.voucherMinor / 100) : undefined, cashAmountDue: r.receipt ? String(r.receipt.cashMinor / 100) : undefined, paymentMethod: "cash", status: r.status, rider_name: r.rider?.name, rider_phone: r.rider?.phone, vehicle_details: r.rider ? [r.rider.vehicleModel, r.rider.vehicleNumber, r.rider.vehicleColor].filter(Boolean).join(" · ") : undefined };
+  return { id: r.id, jobType: r.type ?? "ride", delivery: r.type === "package" && r.package ? { id: r.id, status: r.status, package: r.package, collection: r.collection, pickupProof: r.pickupProof, deliveryProof: r.deliveryProof, receiverEmailStatus: r.receiverEmailStatus, incident: r.incident, events: r.events, resolutions: r.resolutions } : undefined, origin: point(r.pickup), destination: point(r.dropoff), originAddress: r.pickup.address, destinationAddress: r.dropoff.address, userName: r.customer?.name, userEmail: r.customer?.email, userPhone: r.customer?.phone, rideType: r.vehicleType, vehicle_type: r.vehicleType, riderId: r.riderId, time: new Date(r.createdAt).toISOString(), estimatedFare: String(r.fareMinor / 100), fareAmount: r.receipt ? String(r.receipt.fareMinor / 100) : undefined, voucherAppliedAmount: r.receipt ? String(r.receipt.voucherMinor / 100) : undefined, cashAmountDue: r.receipt ? String(r.receipt.cashMinor / 100) : undefined, paymentMethod: "cash", status: r.status, rider_name: r.rider?.name, rider_phone: r.rider?.phone, vehicle_details: r.rider ? [r.rider.vehicleModel, r.rider.vehicleNumber, r.rider.vehicleColor].filter(Boolean).join(" · ") : undefined };
 }

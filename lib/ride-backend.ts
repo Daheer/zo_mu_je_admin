@@ -19,6 +19,7 @@ export async function backendRequest<T = unknown>(path: string, method = "GET", 
   const url = new URL(base);
   if (url.protocol !== "https:" && !(url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname))) throw new Error("The ride backend requires HTTPS outside localhost.");
   const response = await fetch(`${base.replace(/\/$/, "")}${path}`, { method, cache: "no-store", headers: { Authorization: `Bearer ${await idToken()}`, "Content-Type": "application/json" }, ...(body === undefined ? {} : { body: JSON.stringify(body) }), signal: AbortSignal.timeout(20000) });
+  if (response.status === 204) return undefined as T;
   const value = await response.json();
   if (!response.ok) {
     if (response.status === 404 && method === "GET") return null as T;

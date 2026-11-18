@@ -13,13 +13,14 @@ const STATUS_OPTIONS = [
   "ontrip",
   "ended",
   "cancelled",
+  "picked_up", "arrived_at_dropoff", "delivered", "delivery_review", "support_required", "returning", "return_review", "returned", "no_rider_found",
 ];
 const RIDE_TYPES = ["all", "Tricycle", "Motorcycle"];
 
 export default async function TripsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; rideType?: string; from?: string; to?: string }>;
+  searchParams: Promise<{ status?: string; rideType?: string; jobType?: string; from?: string; to?: string }>;
 }) {
   const params = await searchParams;
   let trips: Awaited<ReturnType<typeof getRideRequests>> = [];
@@ -30,6 +31,7 @@ export default async function TripsPage({
   }
 
   let filtered = trips;
+  if (params.jobType && params.jobType !== 'all') filtered = filtered.filter(t => (t.jobType ?? 'ride') === params.jobType);
   if (params.status && params.status !== "all") {
     filtered = filtered.filter((t) => t.status === params.status);
   }
@@ -61,6 +63,7 @@ export default async function TripsPage({
           rideTypes={RIDE_TYPES}
           currentStatus={params.status ?? "all"}
           currentRideType={params.rideType ?? "all"}
+          currentJobType={params.jobType ?? "all"}
           from={params.from}
           to={params.to}
         />
@@ -79,6 +82,7 @@ export default async function TripsPage({
                   <th className="pb-3 pt-4 px-4">Rider</th>
                   <th className="pb-3 pt-4 px-4">Route</th>
                   <th className="pb-3 pt-4 px-4">Ride type</th>
+                  <th className="pb-3 pt-4 px-4">Service</th>
                   <th className="pb-3 pt-4 px-4">Est. fare</th>
                   <th className="pb-3 pt-4 px-4">Final fare</th>
                   <th className="pb-3 pt-4 px-4">Voucher</th>
@@ -110,6 +114,7 @@ export default async function TripsPage({
                     <td className="py-3 px-4 text-foreground">
                       {t.rideType ?? "—"}
                     </td>
+                    <td className="py-3 px-4 text-foreground">{t.jobType === 'package' ? 'Package' : 'Ride'}</td>
                     <td className="py-3 px-4 text-foreground">
                       {t.estimatedFare
                         ? `₦${parseFloat(t.estimatedFare).toLocaleString()}`

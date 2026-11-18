@@ -7,6 +7,7 @@ export function TripsFilters({
   rideTypes,
   currentStatus,
   currentRideType,
+  currentJobType = 'all',
   from,
   to,
 }: {
@@ -14,6 +15,7 @@ export function TripsFilters({
   rideTypes: string[];
   currentStatus: string;
   currentRideType: string;
+  currentJobType?: string;
   from?: string;
   to?: string;
 }) {
@@ -29,6 +31,7 @@ export function TripsFilters({
 
   return (
     <div className="flex flex-wrap items-end gap-4 rounded-2xl border border-border bg-background p-4 shadow-card">
+      <div><label htmlFor="trip-filter-service" className="block text-xs text-muted-foreground mb-1">Service</label><select id="trip-filter-service" value={currentJobType} onChange={e => updateFilter('jobType', e.target.value)} className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"><option value="all">All</option><option value="ride">Rides</option><option value="package">Packages</option></select></div>
       <div>
         <label htmlFor="trip-filter-status" className="block text-xs text-muted-foreground mb-1">Status</label>
         <select

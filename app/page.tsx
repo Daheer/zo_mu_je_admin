@@ -27,7 +27,7 @@ export default async function DashboardPage() {
     console.error("Firebase not configured or error:", e);
   }
 
-  const endedTrips = trips.filter((t) => t.status === "ended");
+  const endedTrips = trips.filter((t) => t.status === "ended" || t.status === "delivered");
   const totalRevenue = endedTrips.reduce(
     (sum, t) => sum + (parseFloat(t.fareAmount ?? "0") || 0),
     0

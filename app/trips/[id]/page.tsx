@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getRideRequestById } from "@/lib/db";
 import { StatusBadge } from "@/components/StatusBadge";
 import { format } from "date-fns";
+import { requireAdmin } from "@/lib/admin-auth";
+import { DeliveryPanel } from "./DeliveryPanel";
 
 const STATUS_ORDER = ["waiting", "accepted", "arrived", "ontrip", "ended"];
 
@@ -14,6 +16,7 @@ export default async function TripDetailPage({
   const { id } = await params;
   const trip = await getRideRequestById(id).catch(() => null);
   if (!trip) notFound();
+  const actor = await requireAdmin();
 
   const currentIndex = STATUS_ORDER.indexOf(trip.status ?? "waiting");
   const currentIdx = currentIndex === -1 ? 0 : currentIndex;
@@ -93,7 +96,7 @@ export default async function TripDetailPage({
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-8" hidden={trip.jobType === 'package'}>
           <h3 className="text-sm font-medium text-muted-foreground mb-3">Status timeline</h3>
           <div className="flex items-center gap-2 flex-wrap">
             {STATUS_ORDER.map((status, i) => {
@@ -122,6 +125,7 @@ export default async function TripDetailPage({
         </div>
       </div>
 
+      {trip.delivery && <DeliveryPanel job={trip.delivery} canOperate={actor.role !== 'viewer'} />}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="rounded-2xl border border-border bg-background p-6 shadow-card">
           <h3 className="text-lg font-semibold text-foreground mb-4">Customer</h3>
