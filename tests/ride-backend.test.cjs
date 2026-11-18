@@ -34,4 +34,8 @@ test('backend mode maps receipt amounts for existing admin pages and routes muta
   assert.equal(ride.fareAmount,'1392');assert.equal(ride.cashAmountDue,'892');assert.equal(ride.userName,'Customer');
   await api.updateRiderStatus('uid','active');
   assert.equal(calls[0][0],'/v1/admin/riders/uid/status');assert.equal(calls[0][1],'POST');
+  await api.getRiderById('same-uid');
+  await api.getUserById('same-uid');
+  assert.equal(calls[1][0],'/v1/admin/profiles/same-uid?role=rider');
+  assert.equal(calls[2][0],'/v1/admin/profiles/same-uid?role=customer');
 });

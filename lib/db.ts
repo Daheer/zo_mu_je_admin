@@ -40,7 +40,7 @@ export async function getRiders(): Promise<Rider[]> {
 }
 
 export async function getRiderById(id: string): Promise<Rider | null> {
-  if (backendEnabled()) return backendRequest<Rider | null>(`/v1/admin/profiles/${encodeURIComponent(id)}`);
+  if (backendEnabled()) return backendRequest<Rider | null>(`/v1/admin/profiles/${encodeURIComponent(id)}?role=rider`);
   if (!hasFirebaseEnv()) return null;
   const db = getAdminDb();
   const ref = db.ref(`riders/${id}`);
@@ -72,7 +72,7 @@ export async function getUsers(): Promise<User[]> {
 }
 
 export async function getUserById(id: string): Promise<User | null> {
-  if (backendEnabled()) return backendRequest<User | null>(`/v1/admin/profiles/${encodeURIComponent(id)}`);
+  if (backendEnabled()) return backendRequest<User | null>(`/v1/admin/profiles/${encodeURIComponent(id)}?role=customer`);
   if (!hasFirebaseEnv()) return null;
   const db = getAdminDb();
   const ref = db.ref(`users/${id}`);
