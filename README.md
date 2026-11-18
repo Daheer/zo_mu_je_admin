@@ -31,3 +31,12 @@ Password-only owner recovery remains available when `ADMIN_PASSWORD` and `BACKEN
 - Writes: `riders/{id}/status` (active/inactive), `reports/{id}` (status, adminNotes, resolvedAt).
 - The `reports` node is created by this admin; the Flutter apps can write to it when users/drivers submit reports.
 - Admin pages read Firebase on each request and refresh every 30 seconds while visible, plus when the tab regains focus. Updates are polled, not streamed in real time. Riders with a registration date appear newest first; older records without a date follow them.
+
+
+### Hosted admin connection
+
+The hosted admin must set `RIDE_BACKEND_URL=https://zo-mu-je.duckdns.org` in Vercel's Production environment. Password-only owner recovery also needs `BACKEND_OWNER_UID` set to the existing Firebase owner's UID (the local ignored `.env.local` already contains it). Redeploy after changing environment variables; an existing deployment does not pick them up automatically.
+
+Without `RIDE_BACKEND_URL`, the legacy adapter reads the old root `riders`/`users` collections. New app registrations live under `rideFoundation` and are listed through `/v1/admin/profiles?role=rider`; approving an old legacy record does not approve a new backend rider profile. Do not merge the two datasets or infer rider approval from a Google sign-in.
+
+The rider list offers All / Pending / Active / Inactive shortcuts with live counts, combined name/email/phone/ID search, and newest registrations first. Settings uses the shared admin theme, plain category navigation and existing form validation/save behavior.

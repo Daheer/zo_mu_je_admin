@@ -39,3 +39,14 @@ test('backend mode maps receipt amounts for existing admin pages and routes muta
   assert.equal(calls[1][0],'/v1/admin/profiles/same-uid?role=rider');
   assert.equal(calls[2][0],'/v1/admin/profiles/same-uid?role=customer');
 });
+
+test('backend rider lists include new pending signups in newest-first order',async()=>{
+  const api=load('lib/db.ts',{
+    './firebase-admin':{getAdminDb:()=>{throw Error('Legacy database must not be accessed')}},
+    './ride-backend':{backendEnabled:()=>true,backendRequest:async()=>null,backendList:async path=>{
+      assert.equal(path,'/v1/admin/profiles?role=rider');
+      return [{id:'older',createdAt:10,status:'active'},{id:'new-google',createdAt:30,status:'pending'},{id:'middle',createdAt:20,status:'pending'}];
+    }},
+  });
+  assert.deepEqual(Array.from(await api.getRiders(),r=>r.id),['new-google','middle','older']);
+});

@@ -27,3 +27,12 @@ Scope: dashboard, riders, customers, trips, reports, login, and one detail page 
 Action failures were exercised with mocked requests. This is a local Chromium review, not a formal screen-reader or cross-browser accessibility certification.
 
 Deployment status: local changes only; the deployed admin app still needs updating.
+
+
+## Riders and Settings update — 18 November 2026
+
+The existing Google account had a pending backend rider profile with vehicle and ID information at the first check. A later authenticated API read showed it active, with an approval audit from the owner account. The hosted rider page was displaying the legacy collection instead. The deployment connection must use `RIDE_BACKEND_URL` and, for password-only recovery, `BACKEND_OWNER_UID`; no rider record or approval was changed during diagnosis.
+
+Added status shortcuts with counts and combined search, email beneath each rider's name, and newest-first backend listings. Filter state is retained when new rider data refreshes. Removed Settings' separate color palette/background, decorative SVGs/avatars, redundant page descriptions and navigation metadata. It now inherits the same theme and card treatment as Riders/Customers; category drafts, validation, permissions, save reasons and history remain intact.
+
+Validation: 21 admin tests passed, including status/search/clear/refresh behavior and ordering of new pending backend signups. TypeScript, ESLint and the Next production build passed. A read-only synthetic preview was generated from the actual components; native screenshot capture was intermittent, so a full responsive visual acceptance pass remains to be confirmed after deployment.

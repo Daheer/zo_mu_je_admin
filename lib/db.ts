@@ -21,7 +21,7 @@ function snapshotToRecord<T extends { id: string }>(
 }
 
 export async function getRiders(): Promise<Rider[]> {
-  if (backendEnabled()) return backendList<Rider>("/v1/admin/profiles?role=rider");
+  if (backendEnabled()) return (await backendList<Rider>("/v1/admin/profiles?role=rider")).sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
   if (!hasFirebaseEnv()) return [];
   const db = getAdminDb();
   const ref = db.ref("riders");

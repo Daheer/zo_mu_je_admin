@@ -5,6 +5,8 @@ import { useMemo, useState } from "react";
 import { StatusBadge } from "@/components/StatusBadge";
 import type { Rider } from "@/lib/types";
 
+const statuses = ["all", "pending", "active", "inactive"] as const;
+
 function SearchIcon() {
   return (
     <svg
@@ -29,33 +31,46 @@ export function RidersTableWithSearch({
   riders: Rider[];
 }) {
   const [query, setQuery] = useState("");
+  const [status, setStatus] = useState<typeof statuses[number]>("all");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return riders;
     return riders.filter(
       (r) =>
-        (r.id && r.id.toLowerCase().includes(q)) ||
-        (r.name && r.name.toLowerCase().includes(q)) ||
-        (r.email && r.email.toLowerCase().includes(q))
+        (status === "all" || (r.status ?? "active") === status) &&
+        (!q || [r.id, r.name, r.email, r.phone].some(value => value?.toLowerCase().includes(q)))
     );
-  }, [riders, query]);
+  }, [riders, query, status]);
 
   return (
     <div className="space-y-4">
+      <div role="group" aria-label="Filter riders by status" className="flex flex-wrap gap-2">
+        {statuses.map(value => {
+          const count = value === "all" ? riders.length : riders.filter(r => (r.status ?? "active") === value).length;
+          return <button key={value} type="button" aria-pressed={status === value} onClick={() => setStatus(value)}
+            className={`rounded-xl border px-4 py-2 text-sm font-medium ${status === value ? "border-primary bg-primary/10 text-primary" : "border-border bg-background text-muted-foreground hover:text-foreground"}`}>
+            {value === "all" ? "All" : value[0].toUpperCase() + value.slice(1)} ({count})
+          </button>;
+        })}
+      </div>
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2">
           <SearchIcon />
         </span>
-        <label htmlFor="search-riders" className="sr-only">Search riders by ID, name, or email</label>
+        <label htmlFor="search-riders" className="sr-only">Search riders by ID, name, email, or phone</label>
         <input
           id="search-riders"
           type="search"
-          placeholder="Search by ID, name, or email..."
+          placeholder="Search by name, email, phone, or ID..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full rounded-xl border border-border bg-background py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
+      </div>
+
+      <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
+        <p role="status">Showing {filtered.length} of {riders.length} riders</p>
+        {(query || status !== "all") && <button type="button" className="text-primary hover:underline" onClick={() => { setQuery(""); setStatus("all"); }}>Clear filters</button>}
       </div>
 
       <div className="rounded-2xl border border-border bg-background shadow-card overflow-hidden">
@@ -63,7 +78,7 @@ export function RidersTableWithSearch({
           <p className="text-muted-foreground p-8 text-center">
             {riders.length === 0
               ? "No riders yet"
-              : "No riders match your search"}
+              : query ? "No riders match your search and status filter" : `No ${status === "all" ? "matching" : status} riders`}
           </p>
         ) : (
           <div className="overflow-x-auto">
@@ -88,6 +103,7 @@ export function RidersTableWithSearch({
                   >
                     <td className="py-3 px-4 font-medium text-foreground">
                       {r.name ?? "—"}
+                      {r.email && <span className="mt-1 block text-xs font-normal text-muted-foreground">{r.email}</span>}
                     </td>
                     <td className="py-3 px-4 text-foreground">{r.phone ?? "—"}</td>
                     <td className="py-3 px-4 text-foreground">

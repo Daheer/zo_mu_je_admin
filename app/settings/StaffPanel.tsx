@@ -24,13 +24,13 @@ export function StaffPanel({ staff }: { staff: Staff[] }) {
     finally { busy.current = false; setPending(false); }
   }
   return <section aria-labelledby="staff-title">
-    <header className="settings-panel-heading"><h2 id="staff-title">Team & access</h2><p>Give your team the right level of admin access.</p></header>
+    <header className="settings-panel-heading"><h2 id="staff-title">Team & access</h2></header>
     <div className="settings-panel-body">
-      <div className="flex items-center justify-between gap-4"><h3 className="font-semibold text-sm">Team members</h3><button type="button" disabled={pending} className="settings-button" onClick={() => setAdding(!adding)} aria-expanded={adding} aria-controls="add-staff-form"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add staff</button></div>
+      <div className="flex justify-end"><button type="button" disabled={pending} className="settings-button" onClick={() => setAdding(!adding)} aria-expanded={adding} aria-controls="add-staff-form">Add staff</button></div>
       <ul className="settings-team-list">
-        <li className="settings-team-row"><span className="settings-avatar" aria-hidden="true">O</span><div className="settings-team-identity"><strong>Platform owner</strong><small>Full access · Owner password</small></div><span className="text-xs font-medium">Owner</span></li>
+        <li className="settings-team-row"><div className="settings-team-identity"><strong>Platform owner</strong><small>Full access</small></div><span className="text-xs font-medium">Owner</span></li>
         {staff.map(s => <li key={s.uid} className="settings-team-row">
-          <span className="settings-avatar" aria-hidden="true">{s.email.slice(0,2).toUpperCase()}</span>
+
           <div className="settings-team-identity"><strong>{s.email}</strong><small>{s.disabled ? "Access disabled" : "Active account"}</small></div>
           <select aria-label={`Role for ${s.email}`} className="settings-input settings-team-role" value={s.role} disabled={pending} onChange={e => run(() => manage({ action: "update", uid: s.uid, role: e.target.value as Staff["role"], disabled: s.disabled }), "Staff role updated.")}><option value="operator">Operator</option><option value="viewer">Viewer</option></select>
           <button type="button" aria-label={`${s.disabled ? "Enable" : "Disable"} ${s.email}`} disabled={pending} className={`settings-button ghost${s.disabled ? "" : " danger"}`} onClick={() => run(() => manage({ action: "update", uid: s.uid, role: s.role, disabled: !s.disabled }), "Staff access updated.")}>{s.disabled ? "Enable" : "Disable"} account</button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { saveSettingsAction } from "./actions";
 import { changedSettings, validateSettings, type SettingsVersion, type PlatformSettings } from "@/lib/platform-settings";
@@ -11,15 +11,14 @@ function Field({ label, children, hint }: { label: string; children: React.React
   return <label className="settings-field"><span className="settings-field-label">{label}</span>{children}{hint && <span className="settings-field-hint">{hint}</span>}</label>;
 }
 function Note({ children }: { children: React.ReactNode }) {
-  return <div className="settings-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></svg><p>{children}</p></div>;
+  return <p className="settings-note">{children}</p>;
 }
-export function SettingsForm({ initial, canEdit, activeSection, onSectionChange, onDirtyChange, heading }: {
+export function SettingsForm({ initial, canEdit, activeSection, onSectionChange, heading }: {
   initial: SettingsVersion;
   canEdit: boolean;
   activeSection: SettingsSection;
   onSectionChange: (section: SettingsSection) => void;
-  onDirtyChange: (dirty: boolean) => void;
-  heading: { label: string; description: string };
+  heading: { label: string };
 }) {
   const [version, setVersion] = useState(initial);
   const [values, setValues] = useState<PlatformSettings>(() => structuredClone(initial.values));
@@ -31,7 +30,6 @@ export function SettingsForm({ initial, canEdit, activeSection, onSectionChange,
   const router = useRouter();
   const dirty = JSON.stringify(values) !== JSON.stringify(version.values);
   const changeCount = Object.keys(changedSettings(version.values, values)).length;
-  useEffect(() => onDirtyChange(dirty), [dirty, onDirtyChange]);
   const edit = (change: (s: PlatformSettings) => void) => {
     setValues(previous => { const next = structuredClone(previous); change(next); return next; });
     setMessage(""); setError("");
@@ -66,7 +64,7 @@ export function SettingsForm({ initial, canEdit, activeSection, onSectionChange,
     finally { saving.current = false; setPending(false); }
   }
   return <form onSubmit={submit} noValidate>
-    <header className="settings-panel-heading"><h2>{heading.label}</h2><p>{heading.description}</p></header>
+    <header className="settings-panel-heading"><h2>{heading.label}</h2></header>
     {!canEdit && <p className="settings-readonly">Your account has read-only access to settings. Ask the owner to make changes.</p>}
     {initial.revision > version.revision && <p role="alert" className="settings-feedback error">A newer revision is available. <button type="button" className="underline" onClick={() => window.location.reload()}>Reload settings</button> before saving.</p>}
     <fieldset disabled={!canEdit || pending} className="settings-panel-body">
@@ -88,7 +86,7 @@ export function SettingsForm({ initial, canEdit, activeSection, onSectionChange,
       </section>
       <section data-settings-section="pricing" hidden={activeSection !== "pricing"}>
         {(["Tricycle", "Motorcycle"] as const).map(type => <div className="settings-vehicle" key={type}>
-          <div className="settings-vehicle-heading"><h3>{type}</h3>{type === "Tricycle" && <span>Keke</span>}</div>
+          <div className="settings-vehicle-heading"><h3>{type}</h3></div>
           <div className="settings-fields three">
             {numeric("Per kilometre (₦)", values.pricing[type].perKm, n => edit(s => { s.pricing[type].perKm = n; }), 0, 10000, .01, undefined, "₦")}
             {numeric("Per minute (₦)", values.pricing[type].perMinute, n => edit(s => { s.pricing[type].perMinute = n; }), 0, 10000, .01, undefined, "₦")}
@@ -124,7 +122,7 @@ export function SettingsForm({ initial, canEdit, activeSection, onSectionChange,
         </div>
         <div className="settings-subsection">
           <h3>Service areas</h3><p className="settings-description">Pickup and destination must each fall inside one of your service areas.</p>
-          {values.service.zones.length === 0 && <div className="settings-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M19 10c0 5-7 10-7 10S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><h3>All locations are eligible</h3><p>Add an area to limit bookings to the places you serve.</p></div>}
+          {values.service.zones.length === 0 && <div className="settings-empty"><p>All locations are eligible. Add a service area to limit where customers can book.</p></div>}
           {values.service.zones.map((z, i) => <fieldset key={i} className="settings-zone"><legend className="sr-only">Area {i + 1}</legend><div className="settings-zone-top"><h3>Area {i + 1}</h3><button type="button" aria-label={`Remove area ${i + 1}`} className="settings-button ghost danger" onClick={() => edit(s => { s.service.zones.splice(i,1); })}>Remove area</button></div>
             <Field label="Area name"><input required maxLength={80} className="settings-input" value={z.name} placeholder="e.g. Central Lafia" onChange={e => edit(s => { s.service.zones[i].name = e.target.value; })} /></Field>
             <div className="settings-fields three">
@@ -133,7 +131,7 @@ export function SettingsForm({ initial, canEdit, activeSection, onSectionChange,
               {numeric("Radius (km)", z.radiusKm, n => edit(s => { s.service.zones[i].radiusKm = n; }), .5, 100, .1, undefined, "km")}
             </div>
           </fieldset>)}
-          <button type="button" disabled={values.service.zones.length >= 20} className="settings-button mt-4" onClick={() => edit(s => { s.service.zones.push({ name: "", latitude: 0, longitude: 0, radiusKm: 5 }); })}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Add service area</button>
+          <button type="button" disabled={values.service.zones.length >= 20} className="settings-button mt-4" onClick={() => edit(s => { s.service.zones.push({ name: "", latitude: 0, longitude: 0, radiusKm: 5 }); })}>Add service area</button>
         </div>
       </section>
       <section data-settings-section="verification" hidden={activeSection !== "verification"}>
@@ -165,7 +163,7 @@ export function SettingsForm({ initial, canEdit, activeSection, onSectionChange,
     {message && <p role="status" className="settings-feedback success">{message}</p>}
     {canEdit && <footer className="settings-save-area">
       {dirty && <div className="settings-save-note"><Field label="Reason for this change"><textarea required disabled={pending} minLength={5} maxLength={300} className="settings-input" rows={2} value={reason} onChange={e => setReason(e.target.value)} placeholder="A short note for your change history" /></Field></div>}
-      <div className="settings-save-row"><p className="settings-save-caption">{dirty ? `${changeCount} unsaved ${changeCount === 1 ? "change" : "changes"}` : "All changes saved"}</p><div className="settings-save-buttons">{dirty && <button type="button" disabled={pending} className="settings-button ghost" onClick={() => { setValues(structuredClone(version.values)); setReason(""); setError(""); }}>Discard</button>}<button disabled={pending || !dirty} className="settings-button primary">{pending ? "Saving…" : "Save changes"}</button></div></div>
+      <div className="settings-save-row"><p className="settings-save-caption">{dirty ? `${changeCount} unsaved ${changeCount === 1 ? "change" : "changes"}` : ""}</p><div className="settings-save-buttons">{dirty && <button type="button" disabled={pending} className="settings-button ghost" onClick={() => { setValues(structuredClone(version.values)); setReason(""); setError(""); }}>Discard</button>}<button disabled={pending || !dirty} className="settings-button primary">{pending ? "Saving…" : "Save changes"}</button></div></div>
     </footer>}
   </form>;
 }
