@@ -47,3 +47,8 @@ The rider list offers All / Pending / Active / Inactive shortcuts with live coun
 The `courier-email` branch adds a plain Courier settings tab for editable motorcycle package prices, weights/dimensions, prohibited items and activation. Prices start from the backend’s configured motorcycle fare with ₦0/₦100/₦200 size surcharges; bookings start disabled and enabling requires Gmail SMTP configuration. Existing ride settings retain their schema and drafts. Courier revisions have a separate audit history.
 
 Trips filters now separate packages and rides. Package details show receiver contacts, cash confirmation, private pickup/delivery/return photo links and audited support outcomes. Operators can approve delivery photo fallback, arrange return to the original pickup, confirm handback/refund or revoke receiver tracking. The backend enforces permissions, custody and resolution idempotency. These controls require backend 0.5.0; older backends still serve existing ride pages and show the courier settings unavailable state. No hosted configuration was changed as part of this branch.
+
+
+## Courier update — 21 November 2026
+
+Backend 0.5.1 supports both motorcycle and keke delivery riders. Courier settings copy now reflects both vehicle types; prices and parcel limits retain the existing shared configuration.

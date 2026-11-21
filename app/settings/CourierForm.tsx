@@ -39,7 +39,7 @@ export function CourierForm({ initial, canEdit }: { initial: CourierSettings | n
     {initial.revision > version.revision && <p role="alert" className="settings-feedback error">A newer courier revision is available. Reload before saving.</p>}
     <fieldset disabled={!canEdit || pending} className="settings-panel-body">
       <section className="settings-subsection">
-        <label className="settings-toggle-row"><span className="settings-toggle-copy"><strong>Accept package bookings</strong><small>Motorcycle riders must also opt in to deliveries.</small></span><input type="checkbox" role="switch" className="settings-switch" checked={values.enabled} disabled={!initial.emailConfigured && !values.enabled} onChange={e => edit(v => { v.enabled = e.target.checked; })} /></label>
+        <label className="settings-toggle-row"><span className="settings-toggle-copy"><strong>Accept package bookings</strong><small>Motorcycle and keke riders can opt in to deliveries.</small></span><input type="checkbox" role="switch" className="settings-switch" checked={values.enabled} disabled={!initial.emailConfigured && !values.enabled} onChange={e => edit(v => { v.enabled = e.target.checked; })} /></label>
         <p className="settings-note">{initial.emailConfigured ? "Receiver email is configured. Complete the app delivery checks before enabling bookings." : "Configure Gmail SMTP on the backend before enabling package bookings."} Cash is collected from the sender or receiver, as selected when booking.</p>
       </section>
       <section className="settings-subsection"><h3>Delivery pricing</h3><div className="settings-fields three">
@@ -54,7 +54,7 @@ export function CourierForm({ initial, canEdit }: { initial: CourierSettings | n
         {number("Height (cm)", values.sizes[size].heightCm, n => edit(v => { v.sizes[size].heightCm = n; }), .01, 30)}
         {number("Surcharge (₦)", values.sizes[size].surcharge, n => edit(v => { v.sizes[size].surcharge = n; }), 0, 10000)}
       </div></section>)}
-      <section className="settings-subsection"><label className="settings-field"><span className="settings-field-label">Prohibited items</span><textarea className="settings-input" required minLength={20} maxLength={2000} rows={4} value={values.prohibitedItems} onChange={e => edit(v => { v.prohibitedItems = e.target.value; })} /></label><p className="settings-note">Customers must accept this policy and the displayed package limits before booking. Current motorcycle handling limits cap all sizes at 5 kg and 40 × 30 × 30 cm.</p></section>
+      <section className="settings-subsection"><label className="settings-field"><span className="settings-field-label">Prohibited items</span><textarea className="settings-input" required minLength={20} maxLength={2000} rows={4} value={values.prohibitedItems} onChange={e => edit(v => { v.prohibitedItems = e.target.value; })} /></label><p className="settings-note">Customers must accept this policy and the displayed package limits before booking. Current package limits cap all sizes at 5 kg and 40 × 30 × 30 cm.</p></section>
     </fieldset>
     {error && <p role="alert" className="settings-feedback error">{error}</p>}
     {message && <p role="status" className="settings-feedback success">{message}</p>}
