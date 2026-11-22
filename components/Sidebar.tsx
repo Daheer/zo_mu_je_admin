@@ -11,10 +11,11 @@ const navItems = [
   { href: "/customers", label: "Customers" },
   { href: "/trips", label: "Trips" },
   { href: "/reports", label: "Reports" },
+  { href: "/merchants", label: "Merchants", ownerOnly: true },
   { href: "/settings", label: "Settings" },
 ];
 
-export function Sidebar() {
+export function Sidebar({ canManageMerchants }: { canManageMerchants: boolean }) {
   const pathname = usePathname();
   const logoutForm = (
         <form action={logoutAction}>
@@ -44,7 +45,7 @@ export function Sidebar() {
       </div>
       <nav aria-label="Admin navigation" className="min-w-0 p-2 md:flex-1 md:p-3">
         <ul className="grid grid-cols-3 gap-1 md:block md:space-y-1">
-          {navItems.map((item) => {
+          {navItems.filter(item => !item.ownerOnly || canManageMerchants).map((item) => {
             const isActive =
               item.href === "/"
                 ? pathname === "/"

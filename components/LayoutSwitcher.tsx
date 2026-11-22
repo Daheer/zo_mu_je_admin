@@ -6,8 +6,10 @@ import { Sidebar } from "./Sidebar";
 
 export function LayoutSwitcher({
   children,
+  canManageMerchants,
 }: {
   children: React.ReactNode;
+  canManageMerchants: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -33,7 +35,7 @@ export function LayoutSwitcher({
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-background focus:px-4 focus:py-3 focus:text-foreground">
         Skip to content
       </a>
-      <Sidebar />
+      <Sidebar canManageMerchants={canManageMerchants} />
       <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
     </div>
   );

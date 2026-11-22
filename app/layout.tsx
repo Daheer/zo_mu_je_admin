@@ -24,11 +24,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  if (headers().get("x-admin-pathname") !== "/login") await requireAdmin();
+  const actor = headers().get("x-admin-pathname") === "/login" ? null : await requireAdmin();
   return (
     <html lang="en" className={dmMono.variable}>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <LayoutSwitcher>{children}</LayoutSwitcher>
+        <LayoutSwitcher canManageMerchants={actor?.role === "owner"}>{children}</LayoutSwitcher>
       </body>
     </html>
   );
